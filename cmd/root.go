@@ -92,12 +92,15 @@ func initializeConfig(cmd *cobra.Command) error {
 	}
 
 	// Bind config to env as well
+	viper.BindEnv("fetchUrl")
 	// For example usernameEnvVar will read GRUMBLE_PASSWORDENVVAR
-	// we don't need viper.MustBindEnv("usernameEnvVar") since we have defaults
+	// we don't need viper.MustBindEnv("usernameEnvVar") since we have defaults above
 	viper.SetEnvPrefix("GRUMBLE")
 	viper.AutomaticEnv()
 
 	syncViperToCommandFlags(cmd)
+
+	log.SetPrefix("grumble:")
 
 	return nil
 }
