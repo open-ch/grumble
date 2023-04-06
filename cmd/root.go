@@ -2,7 +2,12 @@ package cmd
 
 import (
 	"log"
+	"os"
+	"os/exec"
+	"path"
+	"strings"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -31,44 +36,82 @@ var configMap = map[string]string{
 // GetRootCommand returns the root command used to
 // run the grumble cli.
 func GetRootCommand() *cobra.Command {
-	rootCmd := &cobra.Command{
-		Use:   "grumble",
-		Short: "short description of grumble",
-		Long: `Long description of grumble
+	highlight := lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"}
+	special := lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"}
+	moduleBox := lipgloss.NewStyle().
+		Foreground(special).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(highlight).
+		PaddingLeft(4).
+		PaddingRight(4)
+
+	logo := moduleBox.Render(`
   ________                   ___.   .__
  /  _____/______ __ __  _____\_ |__ |  |   ____
 /   \  __\_  __ \  |  \/     \| __ \|  | _/ __ \
 \    \_\  \  | \/  |  /  Y Y  \ \_\ \  |_\  ___/
  \______  /__|  |____/|__|_|  /___  /____/\___  >
-        \/                  \/    \/          \/
-`,
+        \/                  \/    \/          \/`)
+
+	rootCmd := &cobra.Command{
+		Use:   "grumble",
+		Short: "short description of grumble",
+		Long:  logo,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			return initializeConfig(cmd)
 		},
 	}
-	rootCmd.AddCommand(getDemoCommand())
+	rootCmd.AddCommand(getFetchCommand())
 	rootCmd.AddCommand(getParseCommand())
 
 	return rootCmd
 }
 
 func initializeConfig(cmd *cobra.Command) error {
-	viper.SetConfigName(".grumble.config")
+	viper.SetConfigName("grumble.config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("$HOME/configs")
-	viper.AddConfigPath("$HOME/.config/myprogram")
+	// Note: first match will be used, multiple config files not merged by default
+	// (it could be done with additional code if needed)
+	//
+	// If the working directory is inside a git repo, add repo root to config paths.
+	repoRoot, err := getRepositoryRoot()
+	if err == nil {
+		viper.AddConfigPath(repoRoot)
+		viper.AddConfigPath(path.Join(repoRoot, "cicd"))
+	}
+	viper.AddConfigPath("$HOME/.config/grumble")
 
-	err := viper.ReadInConfig()
+	viper.SetDefault("usernameEnvVar", "GRUMBLE_USERNAME")
+	viper.SetDefault("passwordEnvVar", "GRUMBLE_PASSWORD")
+
+	err = viper.ReadInConfig()
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			log.Printf("Failed to parse config %v\n", err)
 		}
 	}
 
+	// Bind config to env as well
+	// For example usernameEnvVar will read GRUMBLE_PASSWORDENVVAR
+	// we don't need viper.MustBindEnv("usernameEnvVar") since we have defaults
+	viper.SetEnvPrefix("GRUMBLE")
+	viper.AutomaticEnv()
+
 	syncViperToCommandFlags(cmd)
 
 	return nil
+}
+
+func getRepositoryRoot() (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	gitCmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	gitCmd.Dir = cwd
+	output, err := gitCmd.CombinedOutput()
+	return strings.TrimSpace(string(output)), err
 }
 
 // syncViperToCommandFlags makes paths in yaml config available to

@@ -18,7 +18,7 @@ func getParseCommand() *cobra.Command {
 This is the same as the fetch option but with a local file.
 `,
 		Run: func(cmd *cobra.Command, args []string) {
-			sweetReport, err := parse.ParseGrype(path)
+			sweetReport, err := parse.GrypeFile(path)
 			if err != nil {
 				log.Fatalf("grumble gives up: %s\n", err)
 			}
