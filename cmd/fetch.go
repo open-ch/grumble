@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/spf13/viper"
 	"fmt"
-	"log"
 	"os"
 
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/open-ch/grumble/download"
 	"github.com/open-ch/grumble/parse"

@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"log"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -54,9 +54,10 @@ func GetRootCommand() *cobra.Command {
         \/                  \/    \/          \/`)
 
 	rootCmd := &cobra.Command{
-		Use:   "grumble",
-		Short: "short description of grumble",
-		Long:  logo,
+		Use:           "grumble",
+		Short:         "short description of grumble",
+		Long:          logo,
+		SilenceErrors: true, // Avoid ugly double print on unknown commands
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			return initializeConfig(cmd)
 		},
@@ -87,7 +88,7 @@ func initializeConfig(cmd *cobra.Command) error {
 	err = viper.ReadInConfig()
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			log.Printf("Failed to parse config %v\n", err)
+			log.Warnf("Failed to parse config %v\n", err)
 		}
 	}
 
@@ -100,7 +101,12 @@ func initializeConfig(cmd *cobra.Command) error {
 
 	syncViperToCommandFlags(cmd)
 
-	log.SetPrefix("grumble:")
+	log.SetReportTimestamp(false)
+	// TODO make these configurable via global flags/viper vars
+	// --debug sets reporter to true and log level to debug
+	// --log-level sets log level (regardless of --debug)
+	log.SetReportCaller(false)
+	log.SetLevel(log.DebugLevel)
 
 	return nil
 }

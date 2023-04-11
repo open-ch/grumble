@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 
 	"github.com/open-ch/grumble/parse"
