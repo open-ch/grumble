@@ -1,0 +1,188 @@
+package parse
+
+import (
+	"time"
+)
+
+// GrypeDocument allows unmarshalling grype json reports into go. Initial structct auto generated using gojsonstruct
+type GrypeDocument struct {
+	Descriptor struct {
+		Configuration struct {
+			AddCpesIfNone     bool   `json:"add-cpes-if-none"`
+			ByCve             bool   `json:"by-cve"`
+			CheckForAppUpdate bool   `json:"check-for-app-update"`
+			ConfigPath        string `json:"configPath"`
+			DB                struct {
+				AutoUpdate            bool   `json:"auto-update"`
+				CaCert                string `json:"ca-cert"`
+				CacheDir              string `json:"cache-dir"`
+				MaxAllowedBuiltAge    int    `json:"max-allowed-built-age"`
+				UpdateURL             string `json:"update-url"`
+				ValidateAge           bool   `json:"validate-age"`
+				ValidateByHashOnStart bool   `json:"validate-by-hash-on-start"`
+			} `json:"db"`
+			Dev struct {
+				ProfileCpu bool `json:"profile-cpu"`
+				ProfileMem bool `json:"profile-mem"`
+			} `json:"dev"`
+			Distro          string `json:"distro"`
+			Exclude         []any  `json:"exclude"`
+			ExternalSources struct {
+				Enable bool `json:"enable"`
+				Maven  struct {
+					BaseURL              string `json:"baseUrl"`
+					SearchUpstreamBySha1 bool   `json:"searchUpstreamBySha1"`
+				} `json:"maven"`
+			} `json:"externalSources"`
+			FailOnSeverity string `json:"fail-on-severity"`
+			File           string `json:"file"`
+			Ignore         any    `json:"ignore"`
+			Log            struct {
+				File       string `json:"file"`
+				Level      string `json:"level"`
+				Structured bool   `json:"structured"`
+			} `json:"log"`
+			Match struct {
+				Dotnet struct {
+					UsingCpes bool `json:"using-cpes"`
+				} `json:"dotnet"`
+				Golang struct {
+					UsingCpes bool `json:"using-cpes"`
+				} `json:"golang"`
+				Java struct {
+					UsingCpes bool `json:"using-cpes"`
+				} `json:"java"`
+				Javascript struct {
+					UsingCpes bool `json:"using-cpes"`
+				} `json:"javascript"`
+				Python struct {
+					UsingCpes bool `json:"using-cpes"`
+				} `json:"python"`
+				Ruby struct {
+					UsingCpes bool `json:"using-cpes"`
+				} `json:"ruby"`
+				Stock struct {
+					UsingCpes bool `json:"using-cpes"`
+				} `json:"stock"`
+			} `json:"match"`
+			OnlyFixed          bool   `json:"only-fixed"`
+			OnlyNotfixed       bool   `json:"only-notfixed"`
+			Output             string `json:"output"`
+			OutputTemplateFile string `json:"output-template-file"`
+			Platform           string `json:"platform"`
+			Quiet              bool   `json:"quiet"`
+			Registry           struct {
+				Auth                  []any `json:"auth"`
+				InsecureSkipTlsVerify bool  `json:"insecure-skip-tls-verify"`
+				InsecureUseHTTP       bool  `json:"insecure-use-http"`
+			} `json:"registry"`
+			Search struct {
+				IndexedArchives   bool   `json:"indexed-archives"`
+				Scope             string `json:"scope"`
+				UnindexedArchives bool   `json:"unindexed-archives"`
+			} `json:"search"`
+			ShowSuppressed bool `json:"show-suppressed"`
+			Verbosity      int  `json:"verbosity"`
+		} `json:"configuration"`
+		DB struct {
+			Built         time.Time `json:"built"`
+			Checksum      string    `json:"checksum"`
+			Error         any       `json:"error"`
+			Location      string    `json:"location"`
+			SchemaVersion int       `json:"schemaVersion"`
+		} `json:"db"`
+		Name    string `json:"name"`
+		Version string `json:"version"`
+	} `json:"descriptor"`
+	Distro struct {
+		IDLike  any    `json:"idLike"`
+		Name    string `json:"name"`
+		Version string `json:"version"`
+	} `json:"distro"`
+	Matches []struct {
+		Artifact struct {
+			Cpes      []string `json:"cpes"`
+			Language  string   `json:"language"`
+			Licenses  []string `json:"licenses"`
+			Locations []struct {
+				Path string `json:"path"`
+			} `json:"locations"`
+			Metadata *struct {
+				ArchiveDigests []struct {
+					Algorithm string `json:"algorithm"`
+					Value     string `json:"value"`
+				} `json:"archiveDigests,omitempty"`
+				H1Digest      string `json:"h1Digest,omitempty"`
+				ManifestName  string `json:"manifestName"`
+				PomArtifactID string `json:"pomArtifactID"`
+				PomGroupID    string `json:"pomGroupID"`
+				VirtualPath   string `json:"virtualPath,omitempty"`
+			} `json:"metadata,omitempty"`
+			MetadataType string `json:"metadataType,omitempty"`
+			Name         string `json:"name"`
+			Purl         string `json:"purl"`
+			Type         string `json:"type"`
+			Upstreams    []any  `json:"upstreams"`
+			Version      string `json:"version"`
+		} `json:"artifact"`
+		MatchDetails []struct {
+			Found struct {
+				Cpes              []string `json:"cpes,omitempty"`
+				VersionConstraint string   `json:"versionConstraint"`
+				VulnerabilityID   string   `json:"vulnerabilityID"`
+			} `json:"found"`
+			Matcher    string `json:"matcher"`
+			SearchedBy struct {
+				Cpes      []string `json:"cpes,omitempty"`
+				Language  string   `json:"language,omitempty"`
+				Namespace string   `json:"namespace"`
+			} `json:"searchedBy"`
+			Type string `json:"type"`
+		} `json:"matchDetails"`
+		RelatedVulnerabilities []struct {
+			Cvss []struct {
+				Metrics struct {
+					BaseScore           float64 `json:"baseScore"`
+					ExploitabilityScore float64 `json:"exploitabilityScore"`
+					ImpactScore         float64 `json:"impactScore"`
+				} `json:"metrics"`
+				Vector         string   `json:"vector"`
+				VendorMetadata struct{} `json:"vendorMetadata"`
+				Version        string   `json:"version"`
+			} `json:"cvss"`
+			DataSource  string   `json:"dataSource"`
+			Description string   `json:"description"`
+			ID          string   `json:"id"`
+			Namespace   string   `json:"namespace"`
+			Severity    string   `json:"severity,omitempty"`
+			Urls        []string `json:"urls"`
+		} `json:"relatedVulnerabilities"`
+		Vulnerability struct {
+			Advisories []any `json:"advisories"`
+			Cvss       []struct {
+				Metrics struct {
+					BaseScore           float64 `json:"baseScore"`
+					ExploitabilityScore float64 `json:"exploitabilityScore"`
+					ImpactScore         float64 `json:"impactScore"`
+				} `json:"metrics"`
+				Vector         string   `json:"vector"`
+				VendorMetadata struct{} `json:"vendorMetadata"`
+				Version        string   `json:"version"`
+			} `json:"cvss"`
+			DataSource  string `json:"dataSource"`
+			Description string `json:"description"`
+			Fix         struct {
+				State    string   `json:"state"`
+				Versions []string `json:"versions"`
+			} `json:"fix"`
+			ID        string   `json:"id"`
+			Namespace string   `json:"namespace"`
+			Severity  string   `json:"severity"`
+			Urls      []string `json:"urls"`
+		} `json:"vulnerability"`
+	} `json:"matches"`
+	Source struct {
+		Target string `json:"target"`
+		Type   string `json:"type"`
+	} `json:"source"`
+}

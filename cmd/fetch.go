@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/charmbracelet/log"
@@ -9,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/open-ch/grumble/download"
+	"github.com/open-ch/grumble/format"
 	"github.com/open-ch/grumble/parse"
 )
 
@@ -24,6 +24,7 @@ func getFetchCommand() *cobra.Command {
 		Short: "fetch a grype file from a url and parse it",
 		Long:  "Fetch and parse a grype file and display the results",
 		Run: func(cmd *cobra.Command, args []string) {
+			outputFormat := viper.GetString("format")
 			url := viper.GetString("fetchUrl")
 			if url == "" {
 				log.Fatalf("required flag \"url\" (or config value fetchUrl) not set")
@@ -44,9 +45,11 @@ func getFetchCommand() *cobra.Command {
 			if err != nil {
 				log.Fatalf("grumble gives up: %s\n", err)
 			}
-			_, err = fmt.Println(sweetReport)
+
+			formatter := format.NewFormatter(outputFormat, os.Stdout)
+			err = formatter.Print(sweetReport)
 			if err != nil {
-				log.Fatalf("fmt crumbled under it's own weight, grumble knows not what to do about it: %s\n", err)
+				log.Fatalf("grumble cannot output report: %s\n", err)
 			}
 		},
 	}

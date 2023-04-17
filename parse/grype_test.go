@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,15 +16,9 @@ func TestGrypeFile(t *testing.T) {
 		expectedError  bool
 	}{
 		{
-			name:      "Pretty print json content",
-			inputFile: "test-data/grype_empty_structs.json",
-			expectedOutput: `{
-    "descriptor": {},
-    "distro": {},
-    "matches": {},
-    "source": {}
-}
-`,
+			name:           "Pretty print json content",
+			inputFile:      "test-data/grype_empty_input.json",
+			expectedOutput: strings.TrimSpace(getTestReport(t, "test-data/grype_empty_output.json")),
 		},
 		{
 			name:          "Fails on invalid json",
@@ -33,11 +29,14 @@ func TestGrypeFile(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			outputJSON, err := GrypeFile(tc.inputFile)
+			report, err := GrypeFile(tc.inputFile)
 
 			if tc.expectedError {
 				assert.Error(t, err)
 			} else {
+				assert.NoError(t, err)
+
+				outputJSON, err := report.GetJSON()
 				assert.NoError(t, err)
 				assert.Equal(t, tc.expectedOutput, outputJSON)
 			}
@@ -53,14 +52,9 @@ func TestGrypeReport(t *testing.T) {
 		expectedError  bool
 	}{
 		{
-			name:  "Pretty print json content",
-			input: `{"descriptor": {}, "distro": {}, "matches": {}, "source": {}}`,
-			expectedOutput: `{
-    "descriptor": {},
-    "distro": {},
-    "matches": {},
-    "source": {}
-}`,
+			name:           "Pretty print json content",
+			input:          getTestReport(t, "test-data/grype_empty_input.json"),
+			expectedOutput: strings.TrimSpace(getTestReport(t, "test-data/grype_empty_output.json")),
 		},
 		{
 			name:          "Fails on invalid json",
@@ -71,14 +65,25 @@ func TestGrypeReport(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			outputJSON, err := GrypeReport([]byte(tc.input))
+			report, err := GrypeReport([]byte(tc.input))
 
 			if tc.expectedError {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
+
+				outputJSON, err := report.GetJSON()
+				assert.NoError(t, err)
 				assert.Equal(t, tc.expectedOutput, outputJSON)
 			}
 		})
 	}
+}
+
+func getTestReport(t *testing.T, path string) string {
+	t.Helper()
+
+	rawBytes, err := os.ReadFile(path)
+	assert.NoError(t, err)
+	return string(rawBytes)
 }

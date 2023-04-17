@@ -1,0 +1,100 @@
+{
+    "descriptor": {
+        "configuration": {
+            "add-cpes-if-none": false,
+            "by-cve": false,
+            "check-for-app-update": false,
+            "configPath": "",
+            "db": {
+                "auto-update": false,
+                "ca-cert": "",
+                "cache-dir": "",
+                "max-allowed-built-age": 0,
+                "update-url": "",
+                "validate-age": false,
+                "validate-by-hash-on-start": false
+            },
+            "dev": {
+                "profile-cpu": false,
+                "profile-mem": false
+            },
+            "distro": "",
+            "exclude": null,
+            "externalSources": {
+                "enable": false,
+                "maven": {
+                    "baseUrl": "",
+                    "searchUpstreamBySha1": false
+                }
+            },
+            "fail-on-severity": "",
+            "file": "",
+            "ignore": null,
+            "log": {
+                "file": "",
+                "level": "",
+                "structured": false
+            },
+            "match": {
+                "dotnet": {
+                    "using-cpes": false
+                },
+                "golang": {
+                    "using-cpes": false
+                },
+                "java": {
+                    "using-cpes": false
+                },
+                "javascript": {
+                    "using-cpes": false
+                },
+                "python": {
+                    "using-cpes": false
+                },
+                "ruby": {
+                    "using-cpes": false
+                },
+                "stock": {
+                    "using-cpes": false
+                }
+            },
+            "only-fixed": false,
+            "only-notfixed": false,
+            "output": "",
+            "output-template-file": "",
+            "platform": "",
+            "quiet": false,
+            "registry": {
+                "auth": null,
+                "insecure-skip-tls-verify": false,
+                "insecure-use-http": false
+            },
+            "search": {
+                "indexed-archives": false,
+                "scope": "",
+                "unindexed-archives": false
+            },
+            "show-suppressed": false,
+            "verbosity": 0
+        },
+        "db": {
+            "built": "0001-01-01T00:00:00Z",
+            "checksum": "",
+            "error": null,
+            "location": "",
+            "schemaVersion": 0
+        },
+        "name": "",
+        "version": ""
+    },
+    "distro": {
+        "idLike": null,
+        "name": "",
+        "version": ""
+    },
+    "matches": null,
+    "source": {
+        "target": "",
+        "type": ""
+    }
+}

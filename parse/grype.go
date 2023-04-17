@@ -1,7 +1,6 @@
 package parse
 
 import (
-	"bytes"
 	"encoding/json"
 	"os"
 )
@@ -11,10 +10,10 @@ const jsonPrefix = ""
 
 // GrypeFile takes the path to a json file containing a grype
 // report, and parses it.
-func GrypeFile(path string) (string, error) {
+func GrypeFile(path string) (*GrypeDocument, error) {
 	rawJSON, err := os.ReadFile(path)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return GrypeReport(rawJSON)
@@ -22,12 +21,19 @@ func GrypeFile(path string) (string, error) {
 
 // GrypeReport takes the content of a json file
 // and returns a parsed string
-func GrypeReport(rawJSON []byte) (string, error) {
-	var prettyJSON bytes.Buffer
-	err := json.Indent(&prettyJSON, rawJSON, jsonPrefix, jsonIndentSpacing)
+func GrypeReport(rawJSON []byte) (*GrypeDocument, error) {
+	grypeDocument := &GrypeDocument{}
+
+	err := json.Unmarshal(rawJSON, grypeDocument)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return prettyJSON.String(), nil
+	return grypeDocument, nil
+}
+
+// GetJSON formats the report as an indented JSON string.
+func (grypeDocument *GrypeDocument) GetJSON() (string, error) {
+	rawJSON, err := json.MarshalIndent(grypeDocument, jsonPrefix, jsonIndentSpacing)
+	return string(rawJSON), err
 }

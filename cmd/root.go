@@ -65,6 +65,9 @@ func GetRootCommand() *cobra.Command {
 	rootCmd.AddCommand(getFetchCommand())
 	rootCmd.AddCommand(getParseCommand())
 
+	globalFlags := rootCmd.PersistentFlags()
+	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json)")
+
 	return rootCmd
 }
 
@@ -84,6 +87,7 @@ func initializeConfig(cmd *cobra.Command) error {
 
 	viper.SetDefault("usernameEnvVar", "GRUMBLE_USERNAME")
 	viper.SetDefault("passwordEnvVar", "GRUMBLE_PASSWORD")
+	viper.SetDefault("format", "pretty")
 
 	err = viper.ReadInConfig()
 	if err != nil {
@@ -126,7 +130,9 @@ func getRepositoryRoot() (string, error) {
 // syncViperToCommandFlags makes paths in yaml config available to
 // rootCmd.PersistentFlags() transparently
 func syncViperToCommandFlags(cmd *cobra.Command) {
-	cmd.Flags().VisitAll(func(f *pflag.Flag) {
+	flags := cmd.Flags()
+	viper.BindPFlags(flags)
+	flags.VisitAll(func(f *pflag.Flag) {
 		if entry, ok := configMap[f.Name]; ok && !f.Changed && viper.IsSet(entry) {
 			val := viper.GetString(entry)
 			_ = cmd.Flags().Set(f.Name, val)

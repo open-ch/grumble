@@ -1,0 +1,102 @@
+{
+    "matches": [],
+    "source": {
+        "type": "directory",
+        "target": "."
+    },
+    "distro": {
+        "name": "",
+        "version": "",
+        "idLike": null
+    },
+    "descriptor": {
+        "name": "grype",
+        "version": "0.any.0",
+        "configuration": {
+            "configPath": "",
+            "verbosity": 0,
+            "output": "json",
+            "file": "",
+            "distro": "",
+            "add-cpes-if-none": false,
+            "output-template-file": "",
+            "quiet": false,
+            "check-for-app-update": true,
+            "only-fixed": false,
+            "only-notfixed": false,
+            "platform": "",
+            "search": {
+                "scope": "Squashed",
+                "unindexed-archives": false,
+                "indexed-archives": true
+            },
+            "ignore": null,
+            "exclude": [],
+            "db": {
+                "cache-dir": "/grumble/grype/db",
+                "update-url": "https://toolbox-data.anchore.io/grype/databases/listing.json",
+                "ca-cert": "",
+                "auto-update": true,
+                "validate-by-hash-on-start": false,
+                "validate-age": true,
+                "max-allowed-built-age": 432000000000000
+            },
+            "externalSources": {
+                "enable": false,
+                "maven": {
+                    "searchUpstreamBySha1": true,
+                    "baseUrl": "https://search.maven.org/solrsearch/select"
+                }
+            },
+            "match": {
+                "java": {
+                    "using-cpes": true
+                },
+                "dotnet": {
+                    "using-cpes": true
+                },
+                "golang": {
+                    "using-cpes": true
+                },
+                "javascript": {
+                    "using-cpes": false
+                },
+                "python": {
+                    "using-cpes": true
+                },
+                "ruby": {
+                    "using-cpes": true
+                },
+                "stock": {
+                    "using-cpes": true
+                }
+            },
+            "dev": {
+                "profile-cpu": false,
+                "profile-mem": false
+            },
+            "fail-on-severity": "",
+            "registry": {
+                "insecure-skip-tls-verify": false,
+                "insecure-use-http": false,
+                "auth": []
+            },
+            "log": {
+                "structured": false,
+                "level": "warn",
+                "file": ""
+            },
+            "show-suppressed": false,
+            "by-cve": false,
+            "name": "",
+            "default-image-pull-source": ""
+        },
+        "db": {
+            "built": "2023-04-11T01:29:30Z",
+            "schemaVersion": 5,
+            "location": "/grumble/grype/db/5",
+            "checksum": "sha256:fafafafa480ab032a694a3e9a4e697907e5ff1254753344ad4b045dca25be966",
+            "error": null
+        }
+    }
+}
