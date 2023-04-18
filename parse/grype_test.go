@@ -1,12 +1,16 @@
 package parse
 
 import (
+	"encoding/json"
 	"os"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+const jsonIndentSpacing = "    "
+const jsonPrefix = ""
 
 func TestGrypeFile(t *testing.T) {
 	var tests = []struct {
@@ -36,9 +40,9 @@ func TestGrypeFile(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 
-				outputJSON, err := report.GetJSON()
+				outputJSON, err := json.MarshalIndent(report, jsonPrefix, jsonIndentSpacing)
 				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedOutput, outputJSON)
+				assert.Equal(t, tc.expectedOutput, string(outputJSON))
 			}
 		})
 	}
@@ -72,9 +76,9 @@ func TestGrypeReport(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 
-				outputJSON, err := report.GetJSON()
+				outputJSON, err := json.MarshalIndent(report, jsonPrefix, jsonIndentSpacing)
 				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedOutput, outputJSON)
+				assert.Equal(t, tc.expectedOutput, string(outputJSON))
 			}
 		})
 	}

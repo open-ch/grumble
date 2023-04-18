@@ -3,14 +3,13 @@ package parse
 import (
 	"encoding/json"
 	"os"
-)
 
-const jsonIndentSpacing = "    "
-const jsonPrefix = ""
+	"github.com/open-ch/grumble/grype"
+)
 
 // GrypeFile takes the path to a json file containing a grype
 // report, and parses it.
-func GrypeFile(path string) (*GrypeDocument, error) {
+func GrypeFile(path string) (*grype.Document, error) {
 	rawJSON, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -21,8 +20,8 @@ func GrypeFile(path string) (*GrypeDocument, error) {
 
 // GrypeReport takes the content of a json file
 // and returns a parsed string
-func GrypeReport(rawJSON []byte) (*GrypeDocument, error) {
-	grypeDocument := &GrypeDocument{}
+func GrypeReport(rawJSON []byte) (*grype.Document, error) {
+	grypeDocument := &grype.Document{}
 
 	err := json.Unmarshal(rawJSON, grypeDocument)
 	if err != nil {
@@ -30,10 +29,4 @@ func GrypeReport(rawJSON []byte) (*GrypeDocument, error) {
 	}
 
 	return grypeDocument, nil
-}
-
-// GetJSON formats the report as an indented JSON string.
-func (grypeDocument *GrypeDocument) GetJSON() (string, error) {
-	rawJSON, err := json.MarshalIndent(grypeDocument, jsonPrefix, jsonIndentSpacing)
-	return string(rawJSON), err
 }

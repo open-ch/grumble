@@ -14,18 +14,18 @@ const simpleGrype = `{"descriptor": {}, "distro": {}, "matches": {}, "source": {
 func TestFileFromURL(t *testing.T) {
 	var tests = []struct {
 		name          string
-		requestUrl    string
+		requestURL    string
 		expectedBody  string
 		expectedError bool
 	}{
 		{
 			name:         "Makes authenticated requests",
-			requestUrl:   "https://download.example.com/security/latest_grype.json",
+			requestURL:   "https://download.example.com/security/latest_grype.json",
 			expectedBody: simpleGrype,
 		},
 		{
 			name:          "Fails",
-			requestUrl:    "https://download.example.com/security/nonexistant_grype.json",
+			requestURL:    "https://download.example.com/security/nonexistant_grype.json",
 			expectedError: true,
 		},
 	}
@@ -40,10 +40,10 @@ func TestFileFromURL(t *testing.T) {
 				httpmock.NewStringResponder(200, simpleGrype))
 			viper.Set("usernameEnvVar", "GRUMBLE_USERNAME")
 			viper.Set("passwordEnvVar", "GRUMBLE_PASSWORD")
-			os.Setenv("GRUMBLE_USERNAME","grumble")
-			os.Setenv("GRUMBLE_PASSWORD","elbmurg")
+			os.Setenv("GRUMBLE_USERNAME", "grumble")
+			os.Setenv("GRUMBLE_PASSWORD", "elbmurg")
 
-			outputJSON, err := FileFromURL(tc.requestUrl)
+			outputJSON, err := FileFromURL(tc.requestURL)
 
 			if tc.expectedError {
 				assert.Error(t, err)
@@ -57,8 +57,8 @@ func TestFileFromURL(t *testing.T) {
 
 func TestGetAuthCredentials(t *testing.T) {
 	var tests = []struct {
-		name string
-		mockEnv map[string]string
+		name         string
+		mockEnv      map[string]string
 		expectedAuth *auth
 	}{
 		{
@@ -67,7 +67,7 @@ func TestGetAuthCredentials(t *testing.T) {
 				"GRUMBLE_USERNAME": "grumble",
 				"GRUMBLE_PASSWORD": "elbmurg",
 			},
-			expectedAuth: &auth{ username: "grumble", password: "elbmurg"},
+			expectedAuth: &auth{username: "grumble", password: "elbmurg"},
 		},
 		{
 			name: "No auth if username is empty/unset",

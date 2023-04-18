@@ -1,19 +1,26 @@
 package format
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/open-ch/grumble/parse"
+	"github.com/open-ch/grumble/grype"
 )
 
+const jsonIndentSpacing = "    "
+const jsonPrefix = ""
+
+// Formatter can be used to format grype reports for output
+// use NewFormatter to configure a new formatter.
 type Formatter struct {
 	format string
 	writer io.Writer
 }
 
+// NewFormatter configures a new formatter for handling grype documents
 func NewFormatter(format string, writer io.Writer) *Formatter {
 	f := &Formatter{
 		format,
@@ -22,8 +29,9 @@ func NewFormatter(format string, writer io.Writer) *Formatter {
 	return f
 }
 
-func (f *Formatter) Print(document *parse.GrypeDocument) error {
-	var renderFunction func(document *parse.GrypeDocument) (string, error)
+// Print renders the given document using the configured formatter either pretty print or json
+func (f *Formatter) Print(document *grype.Document) error {
+	var renderFunction func(document *grype.Document) (string, error)
 	switch f.format {
 	default:
 		return fmt.Errorf("Invalid formatter print format configured: %s", f.format)
@@ -45,11 +53,13 @@ func (f *Formatter) Print(document *parse.GrypeDocument) error {
 	return nil
 }
 
-func renderJSON(document *parse.GrypeDocument) (string, error) {
-	return document.GetJSON()
+// renderJSON formats the report as an indented JSON string.
+func renderJSON(document *grype.Document) (string, error) {
+	rawJSON, err := json.MarshalIndent(document, jsonPrefix, jsonIndentSpacing)
+	return string(rawJSON), err
 }
 
-func renderPretty(document *parse.GrypeDocument) (string, error) {
+func renderPretty(document *grype.Document) (string, error) {
 	width := 120 // TODO look up current session with
 	highlight := lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"}
 	special := lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"}

@@ -1,16 +1,18 @@
 package download
 
 import (
-	"github.com/spf13/viper"
 	"errors"
 	"fmt"
+	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
 	"time"
 )
 
-const HTTP_TIMEOUT = 5 * time.Second
+// HTTPTimeoutS holds the timeout to use for fetching
+// grype documents from a remote location.
+const HTTPTimeoutS = 5 * time.Second
 
 type auth struct {
 	username string
@@ -23,7 +25,7 @@ type auth struct {
 //
 // defaults: GRUMBLE_USERNAME, GRUMBLE_PASSWORD
 func FileFromURL(url string) ([]byte, error) {
-	client := http.Client{Timeout: HTTP_TIMEOUT}
+	client := http.Client{Timeout: HTTPTimeoutS}
 
 	req, err := http.NewRequest(http.MethodGet, url, http.NoBody)
 	if err != nil {

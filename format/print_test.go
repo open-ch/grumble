@@ -7,13 +7,14 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/parse"
 )
 
 func TestPrint(t *testing.T) {
 	var tests = []struct {
 		name           string
-		document       *parse.GrypeDocument
+		document       *grype.Document
 		ignoreSpacing  bool
 		expectedOutput string
 		expectedError  bool
@@ -26,7 +27,7 @@ func TestPrint(t *testing.T) {
 		},
 		{
 			name:           "JSON: Serializes valid document",
-			document:       &parse.GrypeDocument{},
+			document:       &grype.Document{},
 			expectedOutput: readTestFile(t, "test-data/empty_grype.json"),
 			format:         "json",
 		},
@@ -39,7 +40,7 @@ func TestPrint(t *testing.T) {
 		},
 		{
 			name:           "Pretty: Prints little for no matches",
-			document:       &parse.GrypeDocument{},
+			document:       &grype.Document{},
 			expectedOutput: readTestFile(t, "test-data/pretty_empty_grype"),
 			format:         "pretty",
 		},
@@ -77,7 +78,7 @@ func readTestFile(t *testing.T, path string) string {
 	return string(content)
 }
 
-func readTestGrype(t *testing.T, path string) *parse.GrypeDocument {
+func readTestGrype(t *testing.T, path string) *grype.Document {
 	t.Helper()
 	grypeDoc, err := parse.GrypeFile(path)
 	assert.NoError(t, err)
