@@ -9,12 +9,14 @@ import (
 
 	"github.com/open-ch/grumble/download"
 	"github.com/open-ch/grumble/format"
+	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/parse"
 )
 
 func getFetchCommand() *cobra.Command {
-	var url string
 	var output string
+	var severity string
+	var url string
 
 	cmd := &cobra.Command{
 		Use: "fetch",
@@ -46,8 +48,11 @@ func getFetchCommand() *cobra.Command {
 				log.Fatalf("grumble gives up: %s\n", err)
 			}
 
+			log.Debug("Filters", "severity", severity)
+			filteredResults := sweetReport.Filter(&grype.Filters{Severity: severity})
+
 			formatter := format.NewFormatter(outputFormat, os.Stdout)
-			err = formatter.Print(sweetReport)
+			err = formatter.Print(filteredResults)
 			if err != nil {
 				log.Fatalf("grumble cannot output report: %s\n", err)
 			}
@@ -57,5 +62,7 @@ func getFetchCommand() *cobra.Command {
 	cmd.Flags().StringVarP(&output, "output", "o", "", "Url of grype report to fetch")
 	cmd.Flags().StringVarP(&url, "url", "u", "", "Url of grype report to fetch")
 	viper.BindPFlag("fetchUrl", cmd.Flags().Lookup("url"))
+	cmd.Flags().StringVar(&severity, "severity", "", `filter vunlerabilities for matching severity, one of:
+unknown severity, negligible, low, medium, high, critical`)
 	return cmd
 }
