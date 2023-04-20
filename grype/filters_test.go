@@ -97,6 +97,14 @@ func TestFilter(t *testing.T) {
 				testMatches["critical:cve2"],
 			},
 		},
+		{
+			name:     "Severity+Path+Fix filter each multiple values",
+			document: &testDocumentAllMatches,
+			filters:  Filters{FixState: "invalid,unknown", Severity: "High,Critical", PathPrefix: "wrong/,other/"},
+			expectedMatches: []Match{
+				testMatches["critical:cve2"],
+			},
+		},
 	}
 
 	for _, tc := range tests {
@@ -186,6 +194,57 @@ func TestMatchAllFor(t *testing.T) {
 	}
 }
 
+func TestBySeverity(t *testing.T) {
+	var tests = []struct {
+		name        string
+		filters     Filters
+		match       Match
+		expectMatch bool
+	}{
+		{
+			name:        "Empty filter matches",
+			match:       testMatches["critical:cve1"],
+			expectMatch: true,
+		},
+		{
+			name:        "Matches severity",
+			filters:     Filters{Severity: "Critical"},
+			match:       testMatches["critical:cve1"],
+			expectMatch: true,
+		},
+		{
+			name:        "Matches first of multiple severities",
+			filters:     Filters{Severity: "Critical,High"},
+			match:       testMatches["critical:cve1"],
+			expectMatch: true,
+		},
+		{
+			name:        "Matches second of multiple severities",
+			filters:     Filters{Severity: "Critical,High,Medium"},
+			match:       testMatches["high:cve1:fixed"],
+			expectMatch: true,
+		},
+		{
+			name:    "Missmatch severity differs",
+			filters: Filters{Severity: "High"},
+			match:   testMatches["critical:cve1"],
+		},
+		{
+			name:    "Missmatch no common severity out of multiple",
+			filters: Filters{Severity: "Critical,High"},
+			match:   testMatches["low:cve1:fixed"],
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			matched := tc.filters.bySeverity(&tc.match)
+
+			assert.Equal(t, tc.expectMatch, matched)
+		})
+	}
+}
+
 func TestByFixState(t *testing.T) {
 	var tests = []struct {
 		name        string
@@ -201,6 +260,12 @@ func TestByFixState(t *testing.T) {
 		{
 			name:        "Check for fixed",
 			fixState:    "fixed",
+			match:       testMatches["high:cve1:fixed"],
+			expectMatch: true,
+		},
+		{
+			name:        "Check for multiple states",
+			fixState:    "unknown,fixed",
 			match:       testMatches["high:cve1:fixed"],
 			expectMatch: true,
 		},
@@ -265,6 +330,12 @@ func TestByPathPrefix(t *testing.T) {
 		{
 			name:        "Matches with non primary location",
 			filters:     Filters{PathPrefix: "other/path1/"},
+			match:       testMatches["critical:cve2"],
+			expectMatch: true,
+		},
+		{
+			name:        "Matches any of multiple csv pathprefixes",
+			filters:     Filters{PathPrefix: "wrong/path1,other/path1/"},
 			match:       testMatches["critical:cve2"],
 			expectMatch: true,
 		},

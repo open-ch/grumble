@@ -19,7 +19,7 @@ func getParseCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "parse",
 		Short: "parse a grype output file",
-		Long: `Parses a locally available grype file and display the results
+		Long: `Parses a locally available grype file and display formatted results.
 This is the same as the fetch option but with a local file.
 `,
 		Run: func(cmd *cobra.Command, args []string) {

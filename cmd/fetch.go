@@ -24,7 +24,11 @@ func getFetchCommand() *cobra.Command {
 			"f",
 		},
 		Short: "fetch a grype file from a url and parse it",
-		Long:  "Fetch and parse a grype file and display the results",
+		Long: `Fetch and parse a grype file and display formatted results.
+
+One or more filters can be applied to the matches before the results are formatted.
+Most filters allow multiple values separated by commas, e.g. --severity Critical,High
+`,
 		Run: func(cmd *cobra.Command, args []string) {
 			outputFormat := viper.GetString("format")
 			url := viper.GetString("fetchUrl")
@@ -39,7 +43,7 @@ func getFetchCommand() *cobra.Command {
 			if output != "" {
 				err = os.WriteFile(output, grypeReport, 0600)
 				if err != nil {
-					log.Fatalf("grumble failed to write report to file: %s\n", err)
+					log.Error("grumble failed to write report to file", "err", err)
 				}
 			}
 
