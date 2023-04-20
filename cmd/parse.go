@@ -14,7 +14,8 @@ import (
 
 func getParseCommand() *cobra.Command {
 	var path string
-	var severity string
+	var filters grype.Filters
+
 	cmd := &cobra.Command{
 		Use:   "parse",
 		Short: "parse a grype output file",
@@ -28,8 +29,8 @@ This is the same as the fetch option but with a local file.
 				log.Fatalf("grumble gives up: %s\n", err)
 			}
 
-			log.Debug("Filters", "severity", severity)
-			filteredResults := sweetReport.Filter(&grype.Filters{Severity: severity})
+			log.Debug("Match filters", "filters", filters)
+			filteredResults := sweetReport.Filter(&filters)
 
 			formatter := format.NewFormatter(outputFormat, os.Stdout)
 			err = formatter.Print(filteredResults)
@@ -41,7 +42,8 @@ This is the same as the fetch option but with a local file.
 
 	cmd.Flags().StringVarP(&path, "input", "i", "", "Path of grype file to parse")
 	cmd.MarkFlagRequired("input")
-	cmd.Flags().StringVar(&severity, "severity", "", `filter vunlerabilities for matching severity, one of:
-unknown severity, negligible, low, medium, high, critical`)
+	cmd.Flags().StringVar(&filters.FixState, "fix-state", "", "Filter matches based on availability of a fix (unknown, not-fixed, fixed)")
+	cmd.Flags().StringVar(&filters.PathPrefix, "path-prefix", "", `Filter matches based on the artifact path by prefix`)
+	cmd.Flags().StringVar(&filters.Severity, "severity", "", "Filter matches based severity (Critical, High, Medium, Low, Negligible, Unknown severity)")
 	return cmd
 }
