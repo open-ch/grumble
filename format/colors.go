@@ -11,6 +11,9 @@ type colorScheme struct {
 	name      string
 	highlight lipgloss.AdaptiveColor
 	special   lipgloss.AdaptiveColor
+	good      lipgloss.AdaptiveColor
+	neutral   lipgloss.AdaptiveColor
+	bad       lipgloss.AdaptiveColor
 
 	critical lipgloss.AdaptiveColor
 	high     lipgloss.AdaptiveColor
@@ -26,6 +29,9 @@ var colors = colorScheme{
 	name:      "default",
 	highlight: lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"},
 	special:   lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"},
+	good:      lipgloss.AdaptiveColor{Light: "#485e30", Dark: "#9ece6a"},
+	neutral:   lipgloss.AdaptiveColor{Light: "#5a4a78", Dark: "#bb9af7"},
+	bad:       lipgloss.AdaptiveColor{Light: "#8c4351", Dark: "#f7768e"},
 
 	// Severity
 	critical: lipgloss.AdaptiveColor{Light: "#8c4351", Dark: "#f7768e"},

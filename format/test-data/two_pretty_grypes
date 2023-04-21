@@ -1,5 +1,5 @@
 Medium   @org-name/example-team pkg:npm/example@1.0.0  CVE-0000-0000
 Denial of example, this is an example
-Fix state: unknown
+▴ Fix state: unknown
 Language: examplescript
 → example/libs/examples/package-lock.json

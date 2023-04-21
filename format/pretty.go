@@ -12,11 +12,14 @@ import (
 
 type stylesSet struct {
 	// Text styles
-	bold       lipgloss.Style
-	faint      lipgloss.Style
-	paragraph  lipgloss.Style
-	codeowners lipgloss.Style
-	cve        lipgloss.Style
+	bold          lipgloss.Style
+	faint         lipgloss.Style
+	paragraph     lipgloss.Style
+	codeowners    lipgloss.Style
+	cve           lipgloss.Style
+	stateFixed    lipgloss.Style
+	stateNotFixed lipgloss.Style
+	stateOther    lipgloss.Style
 
 	// Severities
 	severityCritical lipgloss.Style
@@ -92,9 +95,7 @@ func renderMatchDetails(match *grype.Match) string {
 	}
 
 	details = append(details,
-		// minor: if we filter by fixed state displaying it might be redundant.
-		// TODO highlight fixed in green?
-		styles.paragraph.Render("Fix state:", match.Vulnerability.Fix.State),
+		renderFixState(match.Vulnerability.Fix.State),
 		styles.paragraph.Render("Language:", match.Artifact.Language),
 		fmt.Sprintf("→ %s", path),
 	)
@@ -117,6 +118,17 @@ func renderSeverity(severity string) string {
 	}
 }
 
+func renderFixState(fixState string) string {
+	switch fixState {
+	case "fixed":
+		return styles.stateFixed.Render("✓ Fix available")
+	case "not-fixed":
+		return styles.stateNotFixed.Render("✗") + styles.faint.Render("Fix not yet available")
+	default:
+		return styles.stateOther.Render("▴") + styles.faint.Render("Fix state:", fixState)
+	}
+}
+
 // Create new styles with the current theme
 func makeStyles() stylesSet {
 	width := 120
@@ -127,6 +139,7 @@ func makeStyles() stylesSet {
 	faint := lipgloss.NewStyle().Faint(true)
 	header := bold.Copy().PaddingRight(headerRightPadding)
 	severity := header.Copy().Width(9) // Critical is the longest one, fix the length
+	fix := header.Copy().PaddingLeft(leftIndent).Foreground(colors.neutral)
 
 	return stylesSet{
 		bold:             bold,
@@ -134,6 +147,9 @@ func makeStyles() stylesSet {
 		paragraph:        faint.Copy().PaddingLeft(leftIndent).Width(width),
 		codeowners:       header,
 		cve:              faint.Copy().Foreground(colors.contrast).Background(colors.backgroundContrast).PaddingLeft(1).PaddingRight(1),
+		stateFixed:       fix.Copy().Foreground(colors.good),
+		stateNotFixed:    fix,
+		stateOther:       fix,
 		severityCritical: severity.Copy().Foreground(colors.critical),
 		severityHigh:     severity.Copy().Foreground(colors.high),
 		severityMedium:   severity.Copy().Foreground(colors.medium),
