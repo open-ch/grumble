@@ -1,4 +1,5 @@
-Medium   pkg:npm/example@1.0.0 CVE-0000-0000
+Medium   @org-name/example-team pkg:npm/example@1.0.0  CVE-0000-0000
 Denial of example, this is an example
-Path: example/libs/examples/package-lock.json
-Code owners: @org-name/example-team
+Fix state: unknown
+Language: examplescript
+→ example/libs/examples/package-lock.json

@@ -8,6 +8,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
+	"github.com/muesli/termenv"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -59,9 +60,12 @@ func GetRootCommand() *cobra.Command {
 		Long:          logo,
 		SilenceErrors: true, // Avoid ugly double print on unknown commands
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			// Prevent hanging on bootstrap: https://github.com/charmbracelet/lipgloss/issues/73
+			lipgloss.SetHasDarkBackground(termenv.HasDarkBackground())
 			return initializeConfig(cmd)
 		},
 	}
+	rootCmd.AddCommand(getDevCommands())
 	rootCmd.AddCommand(getFetchCommand())
 	rootCmd.AddCommand(getParseCommand())
 
