@@ -1,11 +1,11 @@
 package download
 
 import (
-	"github.com/spf13/viper"
 	"os"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
 

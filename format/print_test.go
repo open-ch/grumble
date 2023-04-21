@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/open-ch/grumble/grype"
@@ -53,6 +54,7 @@ func TestPrint(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			viper.Set("codeownersPath", "test-data/CODEOWNERS")
 			var outputStrBuilder strings.Builder
 			fmtr := NewFormatter(tc.format, &outputStrBuilder)
 			err := fmtr.Print(tc.document)

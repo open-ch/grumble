@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/ownership"
 )
 
 func renderPretty(document *grype.Document) (string, error) {
@@ -54,7 +55,10 @@ func renderMatchPretty(match *grype.Match) string {
 	aname := match.Artifact.Purl
 	// TODO join all locations into 1 string, + handle 0 if there could be more than 1?
 	apaths := match.Artifact.Locations[0].Path
-	// We could lookup the code owner based on the path here to output it
+	codeowners, err := ownership.LookupFor(apaths)
+	if err != nil {
+		codeowners = fmt.Sprintf("Error looking up code owners: %s", err)
+	}
 
 	return matchBox.Render(
 		lipgloss.JoinVertical(lipgloss.Left,
@@ -65,6 +69,7 @@ func renderMatchPretty(match *grype.Match) string {
 			),
 			plainStyle.Render(description),
 			plainStyle.Render(fmt.Sprintf("Path: %s", apaths)),
+			plainStyle.Render(fmt.Sprintf("Code owners: %s", codeowners)),
 		))
 }
 

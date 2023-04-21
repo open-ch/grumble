@@ -2,6 +2,10 @@ package grype
 
 import (
 	"strings"
+
+	"github.com/charmbracelet/log"
+
+	"github.com/open-ch/grumble/ownership"
 )
 
 // Filters holds all the filters to apply in a Filter() call
@@ -10,10 +14,12 @@ import (
 //   - FixState will filter by the value (unknown, fixed, not-fixed)
 //   - PathPrefix will filter by whether or not the path starts with the given fragment
 //     (could be exenteded with a glob based path filter)
+//   - Codeowners will filter by the codeowners that match a given path
 type Filters struct {
 	Severity   string
 	FixState   string
 	PathPrefix string
+	Codeowners string
 }
 
 const filterSeparator = ","
@@ -40,7 +46,28 @@ func (d *Document) Filter(filters *Filters) *Document {
 }
 
 func (f *Filters) matchAllFor(match *Match) bool {
-	return f.bySeverity(match) && f.byFixState(match) && f.byPathPrefix(match)
+	return f.bySeverity(match) && f.byFixState(match) && f.byPathPrefix(match) && f.byCodeowners(match)
+}
+
+func (f *Filters) byCodeowners(match *Match) bool {
+	if f.Codeowners == "" {
+		return true
+	}
+
+	ownedByOneOf := strings.Split(f.Codeowners, filterSeparator)
+
+	for _, location := range match.Artifact.Locations {
+		owned, err := ownership.IsOwnedBy(location.Path, ownedByOneOf)
+		if err != nil {
+			log.Error("unable to look up codeowners for path")
+			return false
+		}
+		if owned {
+			return owned
+		}
+	}
+
+	return false
 }
 
 func (f *Filters) bySeverity(match *Match) bool {

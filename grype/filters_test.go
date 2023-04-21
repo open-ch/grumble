@@ -3,10 +3,11 @@ package grype
 import (
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
 
-var testMatches map[string]Match = map[string]Match{
+var testMatches = map[string]Match{
 	"low:cve1:fixed": Match{
 		Vulnerability: Vulnerability{
 			ID:       "low:cve1",
@@ -58,7 +59,7 @@ var testMatches map[string]Match = map[string]Match{
 		},
 	},
 }
-var testDocumentAllMatches Document = Document{
+var testDocumentAllMatches = Document{
 	Matches: []Match{
 		testMatches["low:cve1"],
 		testMatches["low:cve2"],
@@ -109,6 +110,7 @@ func TestFilter(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			viper.Set("codeownersPath", "test-data/CODEOWNERS")
 			filteredDoc := tc.document.Filter(&tc.filters)
 
 			assert.Equal(t, tc.expectedMatches, filteredDoc.Matches)
@@ -188,6 +190,47 @@ func TestMatchAllFor(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			matched := tc.filters.matchAllFor(&tc.match)
+
+			assert.Equal(t, tc.expectMatch, matched)
+		})
+	}
+}
+
+func TestByCodeowners(t *testing.T) {
+	var tests = []struct {
+		name        string
+		filters     Filters
+		match       Match
+		expectMatch bool
+	}{
+		{
+			name:        "Empty filter matches",
+			match:       testMatches["critical:cve1"],
+			expectMatch: true,
+		},
+		{
+			name:        "Matches single owners",
+			filters:     Filters{Codeowners: "@org-name/example-team"},
+			match:       testMatches["critical:cve1"],
+			expectMatch: true,
+		},
+		{
+			name:        "Matches one of several owners",
+			filters:     Filters{Codeowners: "@org-name/example-team,@org-name/other-team"},
+			match:       testMatches["critical:cve1"],
+			expectMatch: true,
+		},
+		{
+			name:    "Missmatch non-owners team",
+			filters: Filters{Codeowners: "@org-name/other-team"},
+			match:   testMatches["critical:cve1"],
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			viper.Set("codeownersPath", "test-data/CODEOWNERS")
+			matched := tc.filters.byCodeowners(&tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -295,6 +338,7 @@ func TestByFixState(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			viper.Set("codeownersPath", "test-data/CODEOWNERS")
 			filters := Filters{FixState: tc.fixState}
 			matched := filters.byFixState(&tc.match)
 

@@ -1,0 +1,11 @@
+# CODEOWNERS File for unit tests
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default team
+*                   @org-name/default-team
+
+# Paths
+/shared/            @org-name/example-team @org-name/other-team
+/example/           @org-name/example-team
+/example/other/     @org-name/other-team
+/other/             @org-name/other-team

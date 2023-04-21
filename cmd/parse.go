@@ -43,7 +43,9 @@ This is the same as the fetch option but with a local file.
 	cmd.Flags().StringVarP(&path, "input", "i", "", "Path of grype file to parse")
 	cmd.MarkFlagRequired("input")
 	cmd.Flags().StringVar(&filters.FixState, "fix-state", "", "Filter matches based on availability of a fix (unknown, not-fixed, fixed)")
-	cmd.Flags().StringVar(&filters.PathPrefix, "path-prefix", "", `Filter matches based on the artifact path by prefix`)
-	cmd.Flags().StringVar(&filters.Severity, "severity", "", "Filter matches based severity (Critical, High, Medium, Low, Negligible, Unknown severity)")
+	cmd.Flags().StringVar(&filters.PathPrefix, "path-prefix", "", "Filter matches based on the artifact path by prefix")
+	cmd.Flags().StringVar(&filters.Severity, "severity", "", "Filter matches based on severity (Critical, High, Medium, Low, Negligible, Unknown severity)")
+	cmd.Flags().StringVar(&filters.Codeowners, "codeowners", "", `Filter matches based on ownership (supports github CODEOWNERS format)
+The CODEOWNERS path can be configured via codeownersPath in the config (default "CODEOWNERS").`)
 	return cmd
 }

@@ -67,6 +67,7 @@ func GetRootCommand() *cobra.Command {
 
 	globalFlags := rootCmd.PersistentFlags()
 	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json)")
+	globalFlags.String("log-level", "", "Sets logger output level (debug|info|warn|error|fatal) (default: info)")
 
 	return rootCmd
 }
@@ -85,9 +86,11 @@ func initializeConfig(cmd *cobra.Command) error {
 	}
 	viper.AddConfigPath("$HOME/.config/grumble")
 
+	viper.SetDefault("codeownersPath", "CODEOWNERS")
+	viper.SetDefault("format", "pretty")
 	viper.SetDefault("usernameEnvVar", "GRUMBLE_USERNAME")
 	viper.SetDefault("passwordEnvVar", "GRUMBLE_PASSWORD")
-	viper.SetDefault("format", "pretty")
+	viper.SetDefault("log-level", "info")
 
 	err = viper.ReadInConfig()
 	if err != nil {
@@ -110,7 +113,16 @@ func initializeConfig(cmd *cobra.Command) error {
 	// --debug sets reporter to true and log level to debug
 	// --log-level sets log level (regardless of --debug)
 	log.SetReportCaller(false)
-	log.SetLevel(log.DebugLevel)
+	switch viper.GetString("log-level") {
+	case "debug":
+		log.SetLevel(log.DebugLevel)
+	case "info":
+		log.SetLevel(log.InfoLevel)
+	case "warn":
+		log.SetLevel(log.WarnLevel)
+	case "error":
+		log.SetLevel(log.ErrorLevel)
+	}
 
 	return nil
 }

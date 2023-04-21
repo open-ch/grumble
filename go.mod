@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/charmbracelet/lipgloss v0.7.1
 	github.com/charmbracelet/log v0.2.1
+	github.com/hmarr/codeowners v1.1.2
 	github.com/jarcoal/httpmock v1.3.0
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
