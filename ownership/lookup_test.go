@@ -14,16 +14,16 @@ func TestLoadFromCODEOWNERS(t *testing.T) {
 	}{
 		{
 			name:           "valid codeowner loads",
-			codeownersPath: "test-data/CODEOWNERS",
+			codeownersPath: "testdata/CODEOWNERS",
 		},
 		{
 			name:           "invalid codeowner fails",
-			codeownersPath: "test-data/invalidCODEOWNERS",
+			codeownersPath: "testdata/invalidCODEOWNERS",
 			expectedError:  true,
 		},
 		{
 			name:           "non existant file fails",
-			codeownersPath: "test-data/nonExistantCODEOWNERS",
+			codeownersPath: "testdata/nonExistantCODEOWNERS",
 			expectedError:  true,
 		},
 	}
@@ -71,7 +71,7 @@ func TestLookupFor(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			l, err := LoadFromCODEOWNERS("test-data/CODEOWNERS")
+			l, err := LoadFromCODEOWNERS("testdata/CODEOWNERS")
 			assert.NoError(t, err)
 			SetLookup(l)
 
@@ -122,7 +122,7 @@ func TestIsOwnedBy(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			l, err := LoadFromCODEOWNERS("test-data/CODEOWNERS")
+			l, err := LoadFromCODEOWNERS("testdata/CODEOWNERS")
 			assert.NoError(t, err)
 			SetLookup(l)
 

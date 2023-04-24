@@ -110,7 +110,7 @@ func TestFilter(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			viper.Set("codeownersPath", "test-data/CODEOWNERS")
+			viper.Set("codeownersPath", "testdata/CODEOWNERS")
 			filteredDoc := tc.document.Filter(&tc.filters)
 
 			assert.Equal(t, tc.expectedMatches, filteredDoc.Matches)
@@ -229,7 +229,7 @@ func TestByCodeowners(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			viper.Set("codeownersPath", "test-data/CODEOWNERS")
+			viper.Set("codeownersPath", "testdata/CODEOWNERS")
 			matched := tc.filters.byCodeowners(&tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
@@ -338,7 +338,7 @@ func TestByFixState(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			viper.Set("codeownersPath", "test-data/CODEOWNERS")
+			viper.Set("codeownersPath", "testdata/CODEOWNERS")
 			filters := Filters{FixState: tc.fixState}
 			matched := filters.byFixState(&tc.match)
 

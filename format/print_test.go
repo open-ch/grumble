@@ -29,20 +29,20 @@ func TestPrint(t *testing.T) {
 		{
 			name:           "JSON: Serializes valid document",
 			document:       &grype.Document{},
-			expectedOutput: readTestFile(t, "test-data/empty_grype.json"),
+			expectedOutput: readTestFile(t, "testdata/empty_grype.json"),
 			format:         "json",
 		},
 		{
 			name:           "Pretty: Prints results with a few details and summary",
-			document:       readTestGrype(t, "test-data/two_grypes.json"),
-			expectedOutput: readTestFile(t, "test-data/two_pretty_grypes"),
+			document:       readTestGrype(t, "testdata/two_grypes.json"),
+			expectedOutput: readTestFile(t, "testdata/two_pretty_grypes"),
 			ignoreSpacing:  true,
 			format:         "pretty",
 		},
 		{
 			name:           "Pretty: Prints little for no matches",
 			document:       &grype.Document{},
-			expectedOutput: readTestFile(t, "test-data/pretty_empty_grype"),
+			expectedOutput: readTestFile(t, "testdata/pretty_empty_grype"),
 			format:         "pretty",
 		},
 		{
@@ -54,7 +54,7 @@ func TestPrint(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			viper.Set("codeownersPath", "test-data/CODEOWNERS")
+			viper.Set("codeownersPath", "testdata/CODEOWNERS")
 			var outputStrBuilder strings.Builder
 			fmtr := NewFormatter(tc.format, &outputStrBuilder)
 			err := fmtr.Print(tc.document)

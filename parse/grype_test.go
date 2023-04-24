@@ -21,12 +21,12 @@ func TestGrypeFile(t *testing.T) {
 	}{
 		{
 			name:           "Pretty print json content",
-			inputFile:      "test-data/grype_empty_input.json",
-			expectedOutput: strings.TrimSpace(getTestReport(t, "test-data/grype_empty_output.json")),
+			inputFile:      "testdata/grype_empty_input.json",
+			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grype_empty_output.json")),
 		},
 		{
 			name:          "Fails on invalid json",
-			inputFile:     "test-data/grype_invalid_json.json",
+			inputFile:     "testdata/grype_invalid_json.json",
 			expectedError: true,
 		},
 	}
@@ -57,8 +57,8 @@ func TestGrypeReport(t *testing.T) {
 	}{
 		{
 			name:           "Pretty print json content",
-			input:          getTestReport(t, "test-data/grype_empty_input.json"),
-			expectedOutput: strings.TrimSpace(getTestReport(t, "test-data/grype_empty_output.json")),
+			input:          getTestReport(t, "testdata/grype_empty_input.json"),
+			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grype_empty_output.json")),
 		},
 		{
 			name:          "Fails on invalid json",
