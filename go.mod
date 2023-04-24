@@ -1,4 +1,4 @@
-module osag/tools/grumble
+module github.com/open-ch/grumble
 
 go 1.20
 

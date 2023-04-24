@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/charmbracelet/log"
 
-	"osag/tools/grumble/cmd"
+	"github.com/open-ch/grumble/cmd"
 )
 
 func main() {
