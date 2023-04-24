@@ -2,21 +2,26 @@ package format
 
 import (
 	"fmt"
-	"github.com/charmbracelet/log"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/log"
+	"golang.org/x/term"
 
 	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/ownership"
 )
 
+const defaultWidth = 120
+
 type stylesSet struct {
 	// Text styles
 	bold          lipgloss.Style
+	codeowners    lipgloss.Style
+	constrast     lipgloss.Style
+	cve           lipgloss.Style
 	faint         lipgloss.Style
 	paragraph     lipgloss.Style
-	codeowners    lipgloss.Style
-	cve           lipgloss.Style
 	stateFixed    lipgloss.Style
 	stateNotFixed lipgloss.Style
 	stateOther    lipgloss.Style
@@ -29,9 +34,24 @@ type stylesSet struct {
 	severityOther    lipgloss.Style
 
 	// Box styles
-	emptyBox  lipgloss.Style
-	matchBox  lipgloss.Style
-	reportBox lipgloss.Style
+	emptyBox   lipgloss.Style
+	summaryBox lipgloss.Style
+	matchBox   lipgloss.Style
+	reportBox  lipgloss.Style
+
+	// Pre-rendered styles & constants
+	logo  string
+	width int
+}
+
+type summary struct {
+	total    int
+	critical int
+	high     int
+	medium   int
+	low      int
+	fixed    int
+	dbAge    time.Time
 }
 
 var styles stylesSet
@@ -43,10 +63,15 @@ func renderPretty(document *grype.Document) (string, error) {
 	}
 
 	var matches []string
+	summary := &summary{
+		dbAge: document.Descriptor.DB.Built,
+	}
 	for _, match := range document.Matches {
 		render := renderMatchPretty(&match)
 		matches = append(matches, render)
+		summary.add(&match)
 	}
+	matches = append(matches, renderSummary(summary))
 
 	return styles.reportBox.Render(lipgloss.JoinVertical(lipgloss.Left,
 		matches...,
@@ -59,6 +84,51 @@ func renderMatchPretty(match *grype.Match) string {
 			renderMatchHeader(match),
 			renderMatchDetails(match),
 		))
+}
+
+func renderSummary(s *summary) string {
+	counterStyle := styles.constrast.Copy().PaddingLeft(1).PaddingRight(1)
+	total := counterStyle.Render(fmt.Sprintf("total: %d", s.total))
+	var critical, high, medium, low, fixed string
+	log.Info("summary", "stats", s)
+	if s.critical > 0 {
+		critical = counterStyle.Copy().Background(colors.critical).
+			Render(fmt.Sprintf("crit: %d", s.critical))
+	}
+	if s.high > 0 {
+		high = counterStyle.Copy().Background(colors.high).
+			Render(fmt.Sprintf("high: %d", s.high))
+	}
+	if s.medium > 0 {
+		medium = counterStyle.Copy().Background(colors.medium).
+			Render(fmt.Sprintf("med: %d", s.medium))
+	}
+	if s.low > 0 {
+		low = counterStyle.Copy().Background(colors.low).
+			Render(fmt.Sprintf("low: %d", s.low))
+	}
+	if s.fixed > 0 {
+		fixed = counterStyle.Copy().Background(colors.good).
+			Render(fmt.Sprintf("fixes: %d", s.fixed))
+	}
+
+	w := lipgloss.Width
+	remainingWidth := styles.width - w(styles.logo) - w(total) - w(critical) - w(high) - w(medium) - w(low) - w(fixed)
+	log.Info("Width info", "remaining", remainingWidth, "w high", w(high), "w low", w(low), "logo", w(styles.logo), "total", w(total))
+	flexibleWidth := styles.constrast.Copy().AlignHorizontal(lipgloss.Right).
+		PaddingRight(1).Width(remainingWidth)
+	dbInfo := flexibleWidth.Render(fmt.Sprintf("Grype db: %s", s.dbAge.Format(time.DateOnly)))
+
+	return styles.summaryBox.Render(lipgloss.JoinHorizontal(lipgloss.Top,
+		styles.logo,
+		total,
+		critical,
+		high,
+		medium,
+		low,
+		fixed,
+		dbInfo,
+	))
 }
 
 func renderMatchHeader(match *grype.Match) string {
@@ -97,7 +167,7 @@ func renderMatchDetails(match *grype.Match) string {
 	details = append(details,
 		renderFixState(match.Vulnerability.Fix.State),
 		styles.paragraph.Render("Language:", match.Artifact.Language),
-		fmt.Sprintf("→ %s", path),
+		fmt.Sprintf("  → %s", path),
 	)
 
 	return lipgloss.JoinVertical(lipgloss.Left, details...)
@@ -131,22 +201,26 @@ func renderFixState(fixState string) string {
 
 // Create new styles with the current theme
 func makeStyles() stylesSet {
-	width := 120
+	width := getTerminalSessionWidth()
 	leftIndent := 2
 	headerRightPadding := 1
 
 	bold := lipgloss.NewStyle().Bold(true)
 	faint := lipgloss.NewStyle().Faint(true)
+	constrast := lipgloss.NewStyle().Foreground(colors.contrast).Background(colors.backgroundContrast)
 	header := bold.Copy().PaddingRight(headerRightPadding)
 	severity := header.Copy().Width(9) // Critical is the longest one, fix the length
 	fix := header.Copy().PaddingLeft(leftIndent).Foreground(colors.neutral)
+	logo := bold.Copy().Foreground(colors.special).Background(colors.highlight).
+		PaddingLeft(1).PaddingRight(1).SetString("Grumble").String()
 
 	return stylesSet{
 		bold:             bold,
+		codeowners:       header,
+		constrast:        constrast,
+		cve:              constrast.Copy().PaddingLeft(1).PaddingRight(1),
 		faint:            faint,
 		paragraph:        faint.Copy().PaddingLeft(leftIndent).Width(width),
-		codeowners:       header,
-		cve:              faint.Copy().Foreground(colors.contrast).Background(colors.backgroundContrast).PaddingLeft(1).PaddingRight(1),
 		stateFixed:       fix.Copy().Foreground(colors.good),
 		stateNotFixed:    fix,
 		stateOther:       fix,
@@ -162,11 +236,45 @@ func makeStyles() stylesSet {
 			BorderForeground(colors.highlight).
 			PaddingLeft(4).
 			PaddingRight(4),
+		summaryBox: constrast.MaxHeight(1).Width(width),
 		matchBox: lipgloss.NewStyle().
 			Foreground(lipgloss.Color("15")).
-			Width(width), // TODO look up current session with dynamically
+			Width(width),
 		reportBox: lipgloss.NewStyle(),
+
+		logo:  logo,
+		width: width,
 	}
+}
+
+func getTerminalSessionWidth() int {
+	if !term.IsTerminal(0) {
+		log.Warn("Pretty printing on non terminal, usign default width")
+		return defaultWidth
+	}
+	width, _, err := term.GetSize(0)
+	if err != nil {
+		log.Warn("Failed to lookup terminal width", "err", err)
+		return defaultWidth
+	}
+	return width
+}
+
+func (s *summary) add(m *grype.Match) {
+	switch m.Vulnerability.Severity {
+	case "Critical":
+		s.critical++
+	case "High":
+		s.high++
+	case "Medium":
+		s.medium++
+	case "Low":
+		s.low++
+	}
+	if m.Vulnerability.Fix.State == "fixed" {
+		s.fixed++
+	}
+	s.total++
 }
 
 func getSquirel() string {

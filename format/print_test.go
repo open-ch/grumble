@@ -33,7 +33,7 @@ func TestPrint(t *testing.T) {
 			format:         "json",
 		},
 		{
-			name:           "Pretty: Prints unicorns for matches",
+			name:           "Pretty: Prints results with a few details and summary",
 			document:       readTestGrype(t, "test-data/two_grypes.json"),
 			expectedOutput: readTestFile(t, "test-data/two_pretty_grypes"),
 			ignoreSpacing:  true,
