@@ -71,7 +71,8 @@ func GetRootCommand() *cobra.Command {
 
 	globalFlags := rootCmd.PersistentFlags()
 	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json)")
-	globalFlags.String("log-level", "", "Sets logger output level (debug|info|warn|error|fatal) (default: info)")
+	globalFlags.String("log-level", "", "Sets logger output level (debug|info|warn|error) (default: info)")
+	globalFlags.Bool("debug", false, "Sets logger output level to debug and enables reporter")
 
 	return rootCmd
 }
@@ -116,9 +117,11 @@ func initializeConfig(cmd *cobra.Command) error {
 	syncViperToCommandFlags(cmd)
 
 	log.SetReportTimestamp(false)
-	// TODO make these configurable via global flags/viper vars
-	// --debug sets reporter to true and log level to debug
 	log.SetReportCaller(false)
+	if viper.GetBool("debug") {
+		log.SetReportCaller(true)
+		viper.Set("log-level", "debug")
+	}
 	switch viper.GetString("log-level") {
 	case "debug":
 		log.SetLevel(log.DebugLevel)
@@ -128,6 +131,8 @@ func initializeConfig(cmd *cobra.Command) error {
 		log.SetLevel(log.WarnLevel)
 	case "error":
 		log.SetLevel(log.ErrorLevel)
+	default:
+		log.Warnf("Unknown log level: %s (supported levels: debug, info, warn, error)", viper.GetString("log-level"))
 	}
 
 	return nil
