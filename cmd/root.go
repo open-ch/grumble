@@ -87,6 +87,9 @@ func initializeConfig(cmd *cobra.Command) error {
 	if err == nil {
 		viper.AddConfigPath(repoRoot)
 		viper.AddConfigPath(path.Join(repoRoot, "cicd"))
+		viper.Set("repositoryPath", repoRoot)
+	} else {
+		log.Warn("Unable to locate repository root (grumble assumes the current working directory is part of a git repository)", "err", err)
 	}
 	viper.AddConfigPath("$HOME/.config/grumble")
 
@@ -115,7 +118,6 @@ func initializeConfig(cmd *cobra.Command) error {
 	log.SetReportTimestamp(false)
 	// TODO make these configurable via global flags/viper vars
 	// --debug sets reporter to true and log level to debug
-	// --log-level sets log level (regardless of --debug)
 	log.SetReportCaller(false)
 	switch viper.GetString("log-level") {
 	case "debug":

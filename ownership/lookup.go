@@ -2,6 +2,7 @@ package ownership
 
 import (
 	"os"
+	"path"
 	"strings"
 
 	"github.com/hmarr/codeowners"
@@ -17,8 +18,8 @@ type Lookup struct {
 var lookup *Lookup
 
 // LoadFromCODEOWNERS builds a new ownership Lookup from a codeowners file.
-func LoadFromCODEOWNERS(path string) (*Lookup, error) {
-	file, err := os.Open(path)
+func LoadFromCODEOWNERS(codeownersPath string) (*Lookup, error) {
+	file, err := os.Open(codeownersPath)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,13 @@ func initDefaultLookupIfNeeded() error {
 	if lookup != nil {
 		return nil
 	}
-	l, err := LoadFromCODEOWNERS(viper.GetString("codeownersPath"))
+
+	codeownersPath := viper.GetString("codeownersPath")
+	repositoryPath := viper.GetString("repositoryPath")
+	if repositoryPath != "" {
+		codeownersPath = path.Join(repositoryPath, codeownersPath)
+	}
+	l, err := LoadFromCODEOWNERS(codeownersPath)
 	if err != nil {
 		return err
 	}
