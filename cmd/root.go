@@ -70,7 +70,7 @@ func GetRootCommand() *cobra.Command {
 	rootCmd.AddCommand(getParseCommand())
 
 	globalFlags := rootCmd.PersistentFlags()
-	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json)")
+	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json, prometheus)")
 	globalFlags.String("log-level", "", "Sets logger output level (debug|info|warn|error) (default: info)")
 	globalFlags.Bool("debug", false, "Sets logger output level to debug and enables reporter")
 
@@ -96,6 +96,7 @@ func initializeConfig(cmd *cobra.Command) error {
 
 	viper.SetDefault("codeownersPath", "CODEOWNERS")
 	viper.SetDefault("format", "pretty")
+	viper.SetDefault("prometheusMetricName", "your_vulnerability")
 	viper.SetDefault("usernameEnvVar", "GRUMBLE_USERNAME")
 	viper.SetDefault("passwordEnvVar", "GRUMBLE_PASSWORD")
 	viper.SetDefault("log-level", "info")

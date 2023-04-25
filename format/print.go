@@ -27,12 +27,14 @@ func NewFormatter(format string, writer io.Writer) *Formatter {
 func (f *Formatter) Print(document *grype.Document) error {
 	var renderFunction func(document *grype.Document) (string, error)
 	switch f.format {
-	default:
-		return fmt.Errorf("Invalid formatter print format configured: %s", f.format)
 	case "json":
 		renderFunction = renderJSON
 	case "pretty":
 		renderFunction = renderPretty
+	case "prometheus":
+		renderFunction = renderPrometheus
+	default:
+		return fmt.Errorf("Invalid formatter print format configured: %s", f.format)
 	}
 
 	output, err := renderFunction(document)

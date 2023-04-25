@@ -2,6 +2,7 @@ package format
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
@@ -139,12 +140,13 @@ func renderMatchHeader(match *grype.Match) string {
 	apaths := match.Artifact.Locations[0].Path
 	codeowners, err := ownership.LookupFor(apaths)
 	if err != nil {
-		codeowners = fmt.Sprintf("Error looking up code owners: %s", err)
+		log.Warn("Error looking up code owners: %s", err)
+		codeowners = []string{"unavailable"}
 	}
 
 	return lipgloss.JoinHorizontal(lipgloss.Top,
 		renderSeverity(match.Vulnerability.Severity),
-		styles.codeowners.Render(codeowners),
+		styles.codeowners.Render(strings.Join(codeowners, ", ")),
 		fmt.Sprintf("%s ", match.Artifact.Purl),
 		styles.cve.Render(cve),
 	)

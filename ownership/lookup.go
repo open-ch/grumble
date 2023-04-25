@@ -3,7 +3,6 @@ package ownership
 import (
 	"os"
 	"path"
-	"strings"
 
 	"github.com/hmarr/codeowners"
 	"github.com/spf13/viper"
@@ -41,21 +40,21 @@ func SetLookup(l *Lookup) {
 
 // LookupFor returns the codeowners for a given path
 // rendered as a comma separated string if multiple.
-func LookupFor(repoPath string) (string, error) {
+func LookupFor(repoPath string) ([]string, error) {
+	var owners []string
 	if err := initDefaultLookupIfNeeded(); err != nil {
-		return "", err
+		return owners, err
 	}
 
 	rule, err := lookup.codeowners.Match(repoPath)
 	if err != nil {
-		return "", err
+		return owners, err
 	}
 
-	var owners []string
 	for _, owner := range rule.Owners {
 		owners = append(owners, owner.String())
 	}
-	return strings.Join(owners, ", "), nil
+	return owners, nil
 }
 
 // IsOwnedBy finds out if a path is owned by one of multiple owners

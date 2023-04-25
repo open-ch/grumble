@@ -1,6 +1,7 @@
 package ownership
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -65,7 +66,7 @@ func TestLookupFor(t *testing.T) {
 		{
 			name:           "multiple owners for shared path",
 			path:           "shared/package.json",
-			expectedOwners: "@org-name/example-team, @org-name/other-team",
+			expectedOwners: "@org-name/example-team,@org-name/other-team",
 		},
 	}
 
@@ -78,7 +79,7 @@ func TestLookupFor(t *testing.T) {
 			owners, err := LookupFor(tc.path)
 
 			assert.NoError(t, err)
-			assert.Equal(t, tc.expectedOwners, owners)
+			assert.Equal(t, tc.expectedOwners, strings.Join(owners, ","))
 		})
 	}
 }

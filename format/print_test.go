@@ -46,6 +46,18 @@ func TestPrint(t *testing.T) {
 			format:         "pretty",
 		},
 		{
+			name:           "Prometheus: Prints header and metrics",
+			document:       readTestGrype(t, "testdata/two_grypes.json"),
+			expectedOutput: readTestFile(t, "testdata/two_prometheus_grypes"),
+			format:         "prometheus",
+		},
+		{
+			name:           "Prometheus: Prints only header for no matches",
+			document:       &grype.Document{},
+			expectedOutput: "# TYPE test_vulnerability gauge\n",
+			format:         "prometheus",
+		},
+		{
 			name:          "Fails on invalid format",
 			expectedError: true,
 			format:        "yamlyml",
@@ -55,6 +67,7 @@ func TestPrint(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			viper.Set("codeownersPath", "testdata/CODEOWNERS")
+			viper.Set("prometheusMetricName", "test_vulnerability")
 			var outputStrBuilder strings.Builder
 			fmtr := NewFormatter(tc.format, &outputStrBuilder)
 			err := fmtr.Print(tc.document)

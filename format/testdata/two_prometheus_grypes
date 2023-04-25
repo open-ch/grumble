@@ -1,0 +1,2 @@
+# TYPE test_vulnerability gauge
+test_vulnerability{id="CVE-0000-0000",severity="Medium",artifact="pkg:npm/example@1.0.0",licenses="",path="example/libs/examples/package-lock.json",codeowners="@org-name/example-team"} 1
