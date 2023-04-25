@@ -19,10 +19,14 @@ func renderPrometheus(document *grype.Document) (string, error) {
 	metric := metricName + dimensions
 
 	var matches []string
+	keys := make(map[string]bool)
 	matches = append(matches, typeHeader)
 	for _, match := range document.Matches {
 		render := renderMetric(metric, &match)
-		matches = append(matches, render)
+		if _, unique := keys[render]; !unique {
+			keys[render] = true
+			matches = append(matches, render)
+		}
 	}
 	return strings.Join(matches, "\n"), nil
 }

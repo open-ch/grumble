@@ -58,6 +58,12 @@ func TestPrint(t *testing.T) {
 			format:         "prometheus",
 		},
 		{
+			name:           "Prometheus: Prints header and metrics no duplicates",
+			document:       readTestGrype(t, "testdata/two_grypes_duplicates.json"),
+			expectedOutput: readTestFile(t, "testdata/two_prometheus_grypes"),
+			format:         "prometheus",
+		},
+		{
 			name:          "Fails on invalid format",
 			expectedError: true,
 			format:        "yamlyml",
