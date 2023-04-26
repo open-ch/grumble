@@ -70,7 +70,7 @@ func GetRootCommand() *cobra.Command {
 	rootCmd.AddCommand(getParseCommand())
 
 	globalFlags := rootCmd.PersistentFlags()
-	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json, prometheus)")
+	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json, prometheus, short)")
 	globalFlags.String("log-level", "", "Sets logger output level (debug|info|warn|error) (default: info)")
 	globalFlags.Bool("debug", false, "Sets logger output level to debug and enables reporter")
 

@@ -33,6 +33,8 @@ func (f *Formatter) Print(document *grype.Document) error {
 		renderFunction = renderPretty
 	case "prometheus":
 		renderFunction = renderPrometheus
+	case "short":
+		renderFunction = renderShort
 	default:
 		return fmt.Errorf("Invalid formatter print format configured: %s", f.format)
 	}

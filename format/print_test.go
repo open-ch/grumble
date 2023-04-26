@@ -64,6 +64,19 @@ func TestPrint(t *testing.T) {
 			format:         "prometheus",
 		},
 		{
+			name:           "Short: Prints little for no matches",
+			document:       &grype.Document{},
+			expectedOutput: "No matches in document\n",
+			format:         "short",
+		},
+		{
+			name:           "Short: Prints results",
+			document:       readTestGrype(t, "testdata/two_grypes.json"),
+			expectedOutput: "Medium   pkg:npm/example@1.0.0 example/libs/examples/package-lock.json CVE-0000-0000\n",
+			ignoreSpacing:  true,
+			format:         "short",
+		},
+		{
 			name:          "Fails on invalid format",
 			expectedError: true,
 			format:        "yamlyml",
