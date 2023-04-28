@@ -31,9 +31,10 @@ This is the same as the fetch option but with a local file.
 
 			log.Debug("Match filters", "filters", filters)
 			filteredResults := sweetReport.Filter(&filters)
+			sortedResults := filteredResults.Sort()
 
 			formatter := format.NewFormatter(outputFormat, os.Stdout)
-			err = formatter.Print(filteredResults)
+			err = formatter.Print(sortedResults)
 			if err != nil {
 				log.Fatalf("grumble cannot output report: %s\n", err)
 			}

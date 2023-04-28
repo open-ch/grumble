@@ -54,9 +54,10 @@ Most filters allow multiple values separated by commas, e.g. --severity Critical
 
 			log.Debug("Match filters", "filters", filters)
 			filteredResults := sweetReport.Filter(&filters)
+			sortedResults := filteredResults.Sort()
 
 			formatter := format.NewFormatter(outputFormat, os.Stdout)
-			err = formatter.Print(filteredResults)
+			err = formatter.Print(sortedResults)
 			if err != nil {
 				log.Fatalf("grumble cannot output report: %s\n", err)
 			}
