@@ -65,6 +65,9 @@ func GetRootCommand() *cobra.Command {
 			return initializeConfig(cmd)
 		},
 	}
+	// The default completions don't work very well, hide them.
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+
 	rootCmd.AddCommand(getDevCommands())
 	rootCmd.AddCommand(getFetchCommand())
 	rootCmd.AddCommand(getParseCommand())
