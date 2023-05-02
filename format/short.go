@@ -8,21 +8,22 @@ import (
 )
 
 func renderShort(document *grype.Document) (string, error) {
-	styles = makeStyles()
 	if len(document.Matches) == 0 {
 		return "No matches in document", nil
 	}
 
 	var matches []string
 	for _, match := range document.Matches {
-		render := renderOneLine(&match)
+		render := RenderMatchShort(&match)
 		matches = append(matches, render)
 	}
 
 	return styles.reportBox.Render(lipgloss.JoinVertical(lipgloss.Left, matches...)), nil
 }
 
-func renderOneLine(match *grype.Match) string {
+// RenderMatchShort Renders a match as a single line of colored text
+func RenderMatchShort(match *grype.Match) string {
+	initStyles()
 	cve := match.Vulnerability.ID
 	if len(match.Artifact.Locations) != 1 {
 		log.Fatal("unexpected input data, only 1 location supported", "locations", len(match.Artifact.Locations))
