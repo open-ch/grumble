@@ -99,7 +99,7 @@ func initializeConfig(cmd *cobra.Command) error {
 
 	viper.SetDefault("codeownersPath", "CODEOWNERS")
 	viper.SetDefault("format", "pretty")
-	viper.SetDefault("prometheusMetricName", "your_vulnerability")
+	viper.SetDefault("prometheusMetricName", "grumble_vulnerability")
 	viper.SetDefault("usernameEnvVar", "GRUMBLE_USERNAME")
 	viper.SetDefault("passwordEnvVar", "GRUMBLE_PASSWORD")
 	viper.SetDefault("log-level", "info")
