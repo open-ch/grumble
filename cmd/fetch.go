@@ -14,9 +14,8 @@ import (
 )
 
 func getFetchCommand() *cobra.Command {
-	var output string
-	var url string
-	var filters grype.Filters
+	output := ""
+	filters := &grype.Filters{}
 
 	cmd := &cobra.Command{
 		Use: "fetch",
@@ -36,7 +35,7 @@ Most filters allow multiple values separated by commas, e.g. --severity Critical
 				log.Fatalf("required flag \"url\" (or config value fetchUrl) not set")
 			}
 
-			grypeReport, err := download.FileFromURL(viper.GetString("fetchUrl"))
+			grypeReport, err := download.FileFromURL(url)
 			if err != nil {
 				log.Fatalf("grumble could not fetch %s: %s\n", url, err)
 			}
@@ -49,11 +48,11 @@ Most filters allow multiple values separated by commas, e.g. --severity Critical
 
 			sweetReport, err := parse.GrypeReport(grypeReport)
 			if err != nil {
-				log.Fatalf("grumble gives up: %s\n", err)
+				log.Fatal(err)
 			}
 
 			log.Debug("Match filters", "filters", filters)
-			filteredResults := sweetReport.Filter(&filters)
+			filteredResults := sweetReport.Filter(filters)
 			sortedResults := filteredResults.Sort()
 
 			formatter := format.NewFormatter(outputFormat, os.Stdout)
@@ -65,12 +64,9 @@ Most filters allow multiple values separated by commas, e.g. --severity Critical
 	}
 
 	cmd.Flags().StringVarP(&output, "output", "o", "", "Optional path to save the raw fetched report at (before any filters or formats are applied)")
-	cmd.Flags().StringVarP(&url, "url", "u", "", "Url of grype report to fetch")
+	cmd.Flags().StringP("url", "u", "", "Url of grype report to fetch")
 	viper.BindPFlag("fetchUrl", cmd.Flags().Lookup("url"))
-	cmd.Flags().StringVar(&filters.FixState, "fix-state", "", "Filter matches based on availability of a fix (unknown, not-fixed, fixed)")
-	cmd.Flags().StringVar(&filters.PathPrefix, "path-prefix", "", `Filter matches based on the artifact path by prefix`)
-	cmd.Flags().StringVar(&filters.Severity, "severity", "", "Filter matches based severity (Critical, High, Medium, Low, Negligible, Unknown severity)")
-	cmd.Flags().StringVar(&filters.Codeowners, "codeowners", "", `Filter matches based on ownership (supports github CODEOWNERS format)
-	The CODEOWNERS path can be configured via codeownersPath in the config (default "CODEOWNERS").`)
+	addAndBindFilterFlags(cmd, filters)
+
 	return cmd
 }

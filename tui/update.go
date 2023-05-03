@@ -1,35 +1,65 @@
 package tui
 
+// revive:disable:modifies-value-receiver The bubbletea Model interface doesn't let us work with pointers
+
 import (
+	"encoding/json"
+
+	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 )
 
 func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	selectedItem := m.list.SelectedItem().(matchListItem)
-
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		keyPress := msg.String()
 		switch keyPress {
-		case "ctrl+c":
+		case "ctrl+c", "q":
 			return m, tea.Quit
+
 		case "o":
-			err := openMatchBestURL(&selectedItem.match)
-			if err != nil {
-				log.Warn("Unable to open Match url", "err", err)
+			if m.list.SelectedItem() != nil && m.list.FilterState() != list.Filtering {
+				selectedItem := m.list.SelectedItem().(matchListItem)
+
+				err := openMatchBestURL(&selectedItem.match)
+				if err != nil {
+					log.Warn("Unable to open Match url", "err", err)
+				}
 			}
+
 		case "enter":
-			// TODO only if not detail view
-			// TODO handle opening the details view (and closing it)
-			log.Debug("Display detail view", selectedItem)
+			if m.list.SelectedItem() != nil && m.list.FilterState() != list.Filtering {
+				selectedItem := m.list.SelectedItem().(matchListItem)
+
+				rawJSON, err := json.MarshalIndent(selectedItem.match, "", "    ")
+				if err != nil {
+					m.details.SetContent(err.Error())
+				}
+				m.view = viewDetails
+				// For now we use json as the detail view, later we might define a pretty format
+				// for all or most fields.
+				m.details.SetContent(string(rawJSON))
+				m.detailsHeader = selectedItem.Title()
+			}
+
+		case "esc":
+			m.view = viewList
 		}
+
 	case tea.WindowSizeMsg:
-		h, v := docStyle.GetFrameSize()
-		m.list.SetSize(msg.Width-h, msg.Height-v)
+		horizontalMargin, verticalMargin := docStyle.GetFrameSize()
+		m.list.SetSize(msg.Width-horizontalMargin, msg.Height-verticalMargin)
+		m.details.Width = msg.Width - horizontalMargin
+		m.details.Height = msg.Height - verticalMargin - lipgloss.Height(m.detailsHeader)
 	}
 
 	var cmd tea.Cmd
-	newListModel, cmd := m.list.Update(msg)
-	return matchBrowserModel{list: newListModel}, cmd
+	if m.view == viewList {
+		m.list, cmd = m.list.Update(msg)
+	} else if m.view == viewDetails {
+		m.details, cmd = m.details.Update(msg)
+	}
+	return m, cmd
 }

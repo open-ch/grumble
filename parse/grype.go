@@ -2,6 +2,7 @@ package parse
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/open-ch/grumble/grype"
@@ -12,7 +13,7 @@ import (
 func GrypeFile(path string) (*grype.Document, error) {
 	rawJSON, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("grumble cannot load document: %w", err)
 	}
 
 	return GrypeReport(rawJSON)
@@ -25,7 +26,7 @@ func GrypeReport(rawJSON []byte) (*grype.Document, error) {
 
 	err := json.Unmarshal(rawJSON, grypeDocument)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("grumble cannot parse document: %w", err)
 	}
 
 	return grypeDocument, nil
