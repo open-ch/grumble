@@ -1,6 +1,7 @@
+package grype
+
 //revive:disable:nested-structs
 //revive:disable:var-naming
-package grype
 
 import (
 	"time"
@@ -10,10 +11,11 @@ import (
 // Initial structct auto generated using gojsonstruct and manualy
 // split afterwards.
 type Document struct {
-	Descriptor Descriptor `json:"descriptor"`
-	Distro     Distro     `json:"distro"`
-	Matches    []Match    `json:"matches"`
-	Source     Source     `json:"source"`
+	Descriptor     Descriptor `json:"descriptor"`
+	Distro         Distro     `json:"distro"`
+	Matches        []Match    `json:"matches"`
+	IgnoredMatches []Match    `json:"ignoredMatches,omitempty"`
+	Source         Source     `json:"source"`
 }
 
 // Descriptor info of a Grype Document
@@ -36,8 +38,8 @@ type Descriptor struct {
 			ProfileCpu bool `json:"profile-cpu"`
 			ProfileMem bool `json:"profile-mem"`
 		} `json:"dev"`
-		Distro          string `json:"distro"`
-		Exclude         []any  `json:"exclude"`
+		Distro          string   `json:"distro"`
+		Exclude         []string `json:"exclude"`
 		ExternalSources struct {
 			Enable bool `json:"enable"`
 			Maven  struct {
@@ -45,9 +47,9 @@ type Descriptor struct {
 				SearchUpstreamBySha1 bool   `json:"searchUpstreamBySha1"`
 			} `json:"maven"`
 		} `json:"externalSources"`
-		FailOnSeverity string `json:"fail-on-severity"`
-		File           string `json:"file"`
-		Ignore         any    `json:"ignore"`
+		FailOnSeverity string       `json:"fail-on-severity"`
+		File           string       `json:"file"`
+		Ignore         []IgnoreRule `json:"ignore"`
 		Log            struct {
 			File       string `json:"file"`
 			Level      string `json:"level"`

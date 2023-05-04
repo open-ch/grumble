@@ -1,0 +1,220 @@
+{
+    "descriptor": {
+        "configuration": {
+            "add-cpes-if-none": false,
+            "by-cve": false,
+            "check-for-app-update": false,
+            "configPath": "",
+            "db": {
+                "auto-update": false,
+                "ca-cert": "",
+                "cache-dir": "",
+                "max-allowed-built-age": 0,
+                "update-url": "",
+                "validate-age": false,
+                "validate-by-hash-on-start": false
+            },
+            "dev": {
+                "profile-cpu": false,
+                "profile-mem": false
+            },
+            "distro": "",
+            "exclude": [
+                "/opt/ignore/path/1"
+            ],
+            "externalSources": {
+                "enable": false,
+                "maven": {
+                    "baseUrl": "",
+                    "searchUpstreamBySha1": false
+                }
+            },
+            "fail-on-severity": "",
+            "file": "",
+            "ignore": [
+                {
+                    "vulnerability": "CVE-1984-1949",
+                    "fix-state": "unknown",
+                    "package": {
+                        "name": "novel",
+                        "version": "3.2.8",
+                        "type": "npm"
+                    }
+                }
+            ],
+            "log": {
+                "file": "",
+                "level": "",
+                "structured": false
+            },
+            "match": {
+                "dotnet": {
+                    "using-cpes": false
+                },
+                "golang": {
+                    "using-cpes": false
+                },
+                "java": {
+                    "using-cpes": false
+                },
+                "javascript": {
+                    "using-cpes": false
+                },
+                "python": {
+                    "using-cpes": false
+                },
+                "ruby": {
+                    "using-cpes": false
+                },
+                "stock": {
+                    "using-cpes": false
+                }
+            },
+            "only-fixed": false,
+            "only-notfixed": false,
+            "output": "",
+            "output-template-file": "",
+            "platform": "",
+            "quiet": false,
+            "registry": {
+                "auth": null,
+                "insecure-skip-tls-verify": false,
+                "insecure-use-http": false
+            },
+            "search": {
+                "indexed-archives": false,
+                "scope": "",
+                "unindexed-archives": false
+            },
+            "show-suppressed": false,
+            "verbosity": 0
+        },
+        "db": {
+            "built": "0001-01-01T00:00:00Z",
+            "checksum": "",
+            "error": null,
+            "location": "",
+            "schemaVersion": 0
+        },
+        "name": "",
+        "version": ""
+    },
+    "distro": {
+        "idLike": null,
+        "name": "",
+        "version": ""
+    },
+    "matches": [
+        {
+            "artifact": {
+                "cpes": [
+                    "cpe:1.0:a:example:example:1.0.0:*:*:*:*:*:*:*"
+                ],
+                "language": "examplescript",
+                "licenses": [],
+                "locations": [
+                    {
+                        "path": "example/libs/examples/package-lock.json"
+                    }
+                ],
+                "name": "example",
+                "purl": "pkg:npm/example@1.0.0",
+                "type": "npm",
+                "upstreams": [],
+                "version": "1.0.0"
+            },
+            "matchDetails": [],
+            "relatedVulnerabilities": [],
+            "vulnerability": {
+                "advisories": [],
+                "cvss": [
+                    {
+                        "metrics": {
+                            "baseScore": 5,
+                            "exploitabilityScore": 5,
+                            "impactScore": 1
+                        },
+                        "vector": "",
+                        "vendorMetadata": {},
+                        "version": "2.0"
+                    }
+                ],
+                "dataSource": "https://nvd.nist.gov/vuln/detail/CVE-0000-0000",
+                "description": "Denial of example, this is an example",
+                "fix": {
+                    "state": "unknown",
+                    "versions": []
+                },
+                "id": "CVE-0000-0000",
+                "namespace": "nvd:cpe",
+                "severity": "Medium",
+                "urls": []
+            }
+        }
+    ],
+    "ignoredMatches": [
+        {
+            "artifact": {
+                "cpes": [],
+                "language": "javascript",
+                "licenses": [
+                    "MIT"
+                ],
+                "locations": [
+                    {
+                        "path": "example/libs/examples/package-lock.json"
+                    }
+                ],
+                "name": "novel",
+                "purl": "pkg:npm/novel@3.2.8",
+                "type": "npm",
+                "upstreams": [],
+                "version": "3.2.8"
+            },
+            "matchDetails": [],
+            "relatedVulnerabilities": [],
+            "vulnerability": {
+                "advisories": [],
+                "cvss": [
+                    {
+                        "metrics": {
+                            "baseScore": 2.5,
+                            "exploitabilityScore": 2.9,
+                            "impactScore": 6.9
+                        },
+                        "vector": "",
+                        "vendorMetadata": {},
+                        "version": "2.0"
+                    }
+                ],
+                "dataSource": "https://en.wikipedia.org/wiki/Nineteen_Eighty-Four",
+                "description": "Nineteen Eighty-Four is a science fiction novel and cautionary tale by George Orwell.",
+                "fix": {
+                    "state": "unknown",
+                    "versions": []
+                },
+                "id": "CVE-1984-1949",
+                "namespace": "nvd:cpe",
+                "severity": "Medium",
+                "urls": [
+                    "https://en.wikipedia.org/wiki/Nineteen_Eighty-Four"
+                ]
+            },
+            "appliedIgnoreRules": [
+                {
+                    "vulnerability": "CVE-1984-1949",
+                    "fix-state": "unknown",
+                    "package": {
+                        "name": "novel",
+                        "version": "3.2.8",
+                        "type": "npm"
+                    }
+                }
+            ]
+        }
+    ],
+    "source": {
+        "target": "",
+        "type": ""
+    }
+}

@@ -31,9 +31,10 @@ const filterSeparator = ","
 func (d *Document) Filter(filters *Filters) *Document {
 	// Make a shallow copy of all but matches
 	fd := &Document{
-		Descriptor: d.Descriptor,
-		Source:     d.Source,
-		Distro:     d.Distro,
+		Descriptor:     d.Descriptor,
+		IgnoredMatches: d.IgnoredMatches,
+		Distro:         d.Distro,
+		Source:         d.Source,
 	}
 
 	for _, match := range d.Matches {

@@ -6,6 +6,7 @@ type Match struct {
 	MatchDetails           []MatchDetail          `json:"matchDetails"`
 	RelatedVulnerabilities []RelatedVulnerability `json:"relatedVulnerabilities"`
 	Vulnerability          Vulnerability          `json:"vulnerability"`
+	AppliedIgnoreRules     []IgnoreRule           `json:"appliedIgnoreRules,omitempty"`
 }
 
 // Artifact info about a match

@@ -11,9 +11,10 @@ import (
 // - Path
 func (d *Document) Sort() *Document {
 	sd := &Document{
-		Descriptor: d.Descriptor,
-		Source:     d.Source,
-		Distro:     d.Distro,
+		Descriptor:     d.Descriptor,
+		Distro:         d.Distro,
+		IgnoredMatches: d.IgnoredMatches,
+		Source:         d.Source,
 	}
 	sd.Matches = append(sd.Matches, d.Matches...)
 
