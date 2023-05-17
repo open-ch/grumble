@@ -51,6 +51,10 @@ func LookupFor(repoPath string) ([]string, error) {
 		return owners, err
 	}
 
+	if rule == nil {
+		return owners, nil
+	}
+
 	for _, owner := range rule.Owners {
 		owners = append(owners, owner.String())
 	}

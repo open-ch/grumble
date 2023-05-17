@@ -1,5 +1,11 @@
 package grype
 
+import (
+	"crypto/sha256"
+	"fmt"
+	"strings"
+)
+
 // Match info of a grype document's matches
 type Match struct {
 	Artifact               Artifact               `json:"artifact"`
@@ -7,6 +13,20 @@ type Match struct {
 	RelatedVulnerabilities []RelatedVulnerability `json:"relatedVulnerabilities"`
 	Vulnerability          Vulnerability          `json:"vulnerability"`
 	AppliedIgnoreRules     []IgnoreRule           `json:"appliedIgnoreRules,omitempty"`
+}
+
+// UniqueID returns a string that uniquely identifies a match
+// it's made of the Vulnerability ID as a digest of the artifact
+// location paths.
+func (m *Match) UniqueID() string {
+	// m.Vulnerability.ID + m.Artifact.Purl is almost good enough
+	// saddly it can occur at different locations.
+	builder := strings.Builder{}
+	for _, location := range m.Artifact.Locations {
+		_, _ = builder.WriteString(location.Path)
+	}
+	locationDigest := sha256.Sum256([]byte(builder.String()))
+	return fmt.Sprintf("%s:%s", m.Vulnerability.ID, locationDigest)
 }
 
 // Artifact info about a match
@@ -58,7 +78,8 @@ type Vulnerability struct {
 
 // Location holds the path of a given artifact
 type Location struct {
-	Path string `json:"path"`
+	Path       string   `json:"path"`
+	Codeowners []string `json:"codeowners,omitempty"` // Additional grumble field not in grype documents
 }
 
 // Metadata about a given artifact

@@ -69,6 +69,7 @@ func GetRootCommand() *cobra.Command {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 
 	rootCmd.AddCommand(getDevCommands())
+	rootCmd.AddCommand(getDiffCommand())
 	rootCmd.AddCommand(getExploreCommand())
 	rootCmd.AddCommand(getFetchCommand())
 	rootCmd.AddCommand(getParseCommand())
