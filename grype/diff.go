@@ -16,8 +16,8 @@ const (
 // the matches. And further limited to added and removed matches
 // match changes not supported.
 type DocumentDiff struct {
-	Added   []Match
-	Removed []Match
+	Added   []Match `json:"added"`
+	Removed []Match `json:"removed"`
 }
 
 // Diff takes 2 reports and returns the difference between them
