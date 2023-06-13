@@ -55,8 +55,10 @@ func GetRootCommand() *cobra.Command {
         \/                  \/    \/          \/`)
 
 	rootCmd := &cobra.Command{
-		Use:           "grumble",
-		Short:         "short description of grumble",
+		Use: "grumble",
+		Short: "Grumble is a tool to parse and explore grype json vulnerability reports." +
+			" It allows quickly filtering, enriching with CODEOWNERS as well as converting to" +
+			" prometheus metrics for observability.",
 		Long:          logo,
 		SilenceErrors: true, // Avoid ugly double print on unknown commands
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
