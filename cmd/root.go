@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
@@ -114,6 +115,8 @@ func initializeConfig(cmd *cobra.Command) error {
 			log.Warnf("Failed to parse config %v\n", err)
 		}
 	}
+
+	viper.Set("now", time.Now().Unix())
 
 	// Bind config to env as well
 	viper.BindEnv("fetchUrl")

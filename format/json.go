@@ -13,3 +13,8 @@ func renderJSON(document *grype.Document) (string, error) {
 	rawJSON, err := json.MarshalIndent(document, jsonPrefix, jsonIndentSpacing)
 	return string(rawJSON), err
 }
+
+func renderDiffJSON(diff *grype.DocumentDiff) (string, error) {
+	rawJSON, err := json.MarshalIndent(diff, jsonPrefix, jsonIndentSpacing)
+	return string(rawJSON), err
+}

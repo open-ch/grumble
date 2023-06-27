@@ -1,15 +1,9 @@
 package grype
 
 import (
-	"encoding/json"
 	"github.com/charmbracelet/log"
 
 	"github.com/open-ch/grumble/ownership"
-)
-
-const (
-	jsonIndentSpacing = "    "
-	jsonPrefix        = ""
 )
 
 // DocumentDiff holds the difference between two documents limited to
@@ -49,12 +43,6 @@ func Diff(before *Document, after *Document) (diff *DocumentDiff) {
 	}
 
 	return diff
-}
-
-// GetJSON returns a serialized version of the DocumentDiff
-func (diff *DocumentDiff) GetJSON() (string, error) {
-	rawJSON, err := json.MarshalIndent(diff, jsonPrefix, jsonIndentSpacing)
-	return string(rawJSON), err
 }
 
 func buildUniqueMatchKeyLookup(d *Document) map[string]Match {

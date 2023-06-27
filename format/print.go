@@ -23,7 +23,7 @@ func NewFormatter(format string, writer io.Writer) *Formatter {
 	return f
 }
 
-// Print renders the given document using the configured formatter either pretty print or json
+// Print renders the given document using the configured formatter
 func (f *Formatter) Print(document *grype.Document) error {
 	var renderFunction func(document *grype.Document) (string, error)
 	switch f.format {
@@ -40,6 +40,30 @@ func (f *Formatter) Print(document *grype.Document) error {
 	}
 
 	output, err := renderFunction(document)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.WriteString(f.writer, fmt.Sprintf("%s\n", output))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// PrintDiff renders the given diff using the configured formatter
+func (f *Formatter) PrintDiff(diff *grype.DocumentDiff) error {
+	var renderFunction func(diff *grype.DocumentDiff) (string, error)
+	switch f.format {
+	case "json":
+		renderFunction = renderDiffJSON
+	case "prometheus":
+		renderFunction = renderDiffPrometheus
+	default:
+		return fmt.Errorf("Invalid formatter print format for DocumentDiff configured: %s", f.format)
+	}
+
+	output, err := renderFunction(diff)
 	if err != nil {
 		return err
 	}

@@ -105,6 +105,87 @@ func TestPrint(t *testing.T) {
 	}
 }
 
+func TestPrintDiff(t *testing.T) {
+	var tests = []struct {
+		name           string
+		diff           *grype.DocumentDiff
+		ignoreSpacing  bool
+		expectedOutput string
+		expectedError  bool
+		format         string
+	}{
+		{
+			name:           "JSON: Nil is null",
+			expectedOutput: "null\n",
+			format:         "json",
+		},
+		{
+			name:           "JSON: Serializes valid document",
+			diff:           &grype.DocumentDiff{},
+			expectedOutput: readTestFile(t, "testdata/empty_diff.json"),
+			format:         "json",
+		},
+		{
+			name: "Prometheus: Prints only header no changes",
+			diff: &grype.DocumentDiff{},
+			expectedOutput: "# TYPE test_vulnerability_new_timestamp_seconds gauge\n" +
+				"# TYPE test_vulnerability_removed_timestamp_seconds gauge\n",
+			format: "prometheus",
+		},
+		{
+			name: "Prometheus: Prints added items as new and removed as remvoed",
+			diff: &grype.DocumentDiff{
+				Added: []grype.Match{grype.Match{
+					Artifact: grype.Artifact{
+						Locations: []grype.Location{
+							grype.Location{Path: "test"},
+						},
+					},
+				}},
+				Removed: []grype.Match{grype.Match{
+					Artifact: grype.Artifact{
+						Locations: []grype.Location{
+							grype.Location{Path: "test"},
+						},
+					},
+				}},
+			},
+			expectedOutput: "# TYPE test_vulnerability_new_timestamp_seconds gauge\n" +
+				`test_vulnerability_new_timestamp_seconds{id="",severity="",artifact="",licenses="",path="test",codeowners="@org-name/default-team"} 1676329200` + "\n" +
+				"# TYPE test_vulnerability_removed_timestamp_seconds gauge\n" +
+				`test_vulnerability_removed_timestamp_seconds{id="",severity="",artifact="",licenses="",path="test",codeowners="@org-name/default-team"} 1676329200` + "\n",
+			format: "prometheus",
+		},
+		{
+			name:          "Fails on invalid format",
+			expectedError: true,
+			format:        "yamlyml",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			viper.Set("codeownersPath", "testdata/CODEOWNERS")
+			viper.Set("prometheusMetricName", "test_vulnerability")
+			viper.Set("now", "1676329200")
+			var outputStrBuilder strings.Builder
+			fmtr := NewFormatter(tc.format, &outputStrBuilder)
+			err := fmtr.PrintDiff(tc.diff)
+
+			if tc.expectedError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				output := outputStrBuilder.String()
+				if tc.ignoreSpacing {
+					output = trimLines(output)
+				}
+				assert.Equal(t, tc.expectedOutput, output)
+			}
+		})
+	}
+}
+
 func readTestFile(t *testing.T, path string) string {
 	t.Helper()
 	content, err := os.ReadFile(path)
