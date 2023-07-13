@@ -18,6 +18,7 @@ var testMatchWithCodeowner = Match{
 			Path:       "example/path1/relevantFile",
 			Codeowners: []string{"@org-name/example-team"},
 		}},
+		Purl: "pkg:golang/example.com/example@v1.0.0",
 	},
 }
 

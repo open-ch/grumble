@@ -26,7 +26,7 @@ func (m *Match) UniqueID() string {
 		_, _ = builder.WriteString(location.Path)
 	}
 	locationDigest := sha256.Sum256([]byte(builder.String()))
-	return fmt.Sprintf("%s:%s", m.Vulnerability.ID, locationDigest)
+	return fmt.Sprintf("%s:%s:%x", m.Vulnerability.ID, m.Artifact.Purl, locationDigest)
 }
 
 // Artifact info about a match

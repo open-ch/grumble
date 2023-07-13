@@ -16,6 +16,7 @@ var testMatches = map[string]Match{
 		},
 		Artifact: Artifact{
 			Locations: []Location{Location{Path: "example/path1/relevantFile"}},
+			Purl:      "pkg:golang/example.com/example@v1.0.0",
 		},
 	},
 	"low:cve2:nopath": Match{
