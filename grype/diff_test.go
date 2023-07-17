@@ -14,7 +14,7 @@ var testMatchWithCodeowner = Match{
 		Fix:      Fix{State: "fixed"},
 	},
 	Artifact: Artifact{
-		Locations: []Location{Location{
+		Locations: []Location{{
 			Path:       "example/path1/relevantFile",
 			Codeowners: []string{"@org-name/example-team"},
 		}},

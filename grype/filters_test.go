@@ -8,45 +8,45 @@ import (
 )
 
 var testMatches = map[string]Match{
-	"low:cve1:fixed": Match{
+	"low:cve1:fixed": {
 		Vulnerability: Vulnerability{
 			ID:       "low:cve1",
 			Severity: "Low",
 			Fix:      Fix{State: "fixed"},
 		},
 		Artifact: Artifact{
-			Locations: []Location{Location{Path: "example/path1/relevantFile"}},
+			Locations: []Location{{Path: "example/path1/relevantFile"}},
 			Purl:      "pkg:golang/example.com/example@v1.0.0",
 		},
 	},
-	"low:cve2:nopath": Match{
+	"low:cve2:nopath": {
 		Vulnerability: Vulnerability{
 			ID:       "low:cve2",
 			Severity: "Low",
 			Fix:      Fix{State: "unknown"},
 		},
 	},
-	"high:cve1:fixed": Match{
+	"high:cve1:fixed": {
 		Vulnerability: Vulnerability{
 			ID:       "high:cve1",
 			Severity: "High",
 			Fix:      Fix{State: "fixed"},
 		},
 		Artifact: Artifact{
-			Locations: []Location{Location{Path: "example/path2/relevantFile"}},
+			Locations: []Location{{Path: "example/path2/relevantFile"}},
 		},
 	},
-	"critical:cve1": Match{
+	"critical:cve1": {
 		Vulnerability: Vulnerability{
 			ID:       "critical:cve1",
 			Severity: "Critical",
 			Fix:      Fix{State: "not-fixed"},
 		},
 		Artifact: Artifact{
-			Locations: []Location{Location{Path: "example/path3/relevantFile"}},
+			Locations: []Location{{Path: "example/path3/relevantFile"}},
 		},
 	},
-	"critical:cve2": Match{
+	"critical:cve2": {
 		Vulnerability: Vulnerability{
 			ID:       "critical:cve2",
 			Severity: "Critical",
@@ -54,8 +54,8 @@ var testMatches = map[string]Match{
 		},
 		Artifact: Artifact{
 			Locations: []Location{
-				Location{Path: "example/path4/relevantFile"},
-				Location{Path: "other/path1/relevantFile"},
+				{Path: "example/path4/relevantFile"},
+				{Path: "other/path1/relevantFile"},
 			},
 		},
 	},

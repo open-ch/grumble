@@ -107,7 +107,7 @@ func genMatch(severity, id string) *grype.Match {
 		Artifact: grype.Artifact{
 			Language:  "go",
 			Purl:      "pkg:example/example@4.2.0",
-			Locations: []grype.Location{grype.Location{Path: "example/path"}},
+			Locations: []grype.Location{{Path: "example/path"}},
 		},
 	}
 }
