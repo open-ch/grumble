@@ -60,7 +60,7 @@
             },
             "only-fixed": false,
             "only-notfixed": false,
-            "output": "",
+            "output": [],
             "output-template-file": "",
             "platform": "",
             "quiet": false,

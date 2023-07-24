@@ -88,8 +88,6 @@ type Metadata *struct {
 	H1Digest       string          `json:"h1Digest,omitempty"`
 	ManifestName   string          `json:"manifestName"`
 	PomArtifactID  string          `json:"pomArtifactID"`
-	PomGroupID     string          `json:"pomGroupID"`
-	VirtualPath    string          `json:"virtualPath,omitempty"`
 }
 
 // ArchiveDigest metadata of an artifacact aka checksum info

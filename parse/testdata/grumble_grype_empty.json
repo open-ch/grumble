@@ -58,9 +58,12 @@
                     "using-cpes": true
                 }
             },
+            "name": "",
             "only-fixed": false,
             "only-notfixed": false,
-            "output": "json",
+            "output": [
+                "json"
+            ],
             "output-template-file": "",
             "platform": "",
             "quiet": false,

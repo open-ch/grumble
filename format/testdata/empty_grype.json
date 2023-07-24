@@ -58,9 +58,10 @@
                     "using-cpes": false
                 }
             },
+            "name": "",
             "only-fixed": false,
             "only-notfixed": false,
-            "output": "",
+            "output": null,
             "output-template-file": "",
             "platform": "",
             "quiet": false,

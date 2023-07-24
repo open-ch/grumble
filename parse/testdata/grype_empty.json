@@ -13,9 +13,10 @@
         "name": "grype",
         "version": "0.any.0",
         "configuration": {
+            "name": "",
             "configPath": "",
             "verbosity": 0,
-            "output": "json",
+            "output": ["json"],
             "file": "",
             "distro": "",
             "add-cpes-if-none": false,

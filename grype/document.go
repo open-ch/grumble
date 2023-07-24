@@ -10,6 +10,14 @@ import (
 // Document allows unmarshalling grype json reports into go.
 // Initial structct auto generated using gojsonstruct and manually
 // split afterwards.
+// example:
+// go install github.com/twpayne/go-jsonstruct/v2/cmd/gojsonstruct@latest
+// wget SCRUBBED-URL
+// cat grype-panta-latest.json | gojsonstruct > new.struct
+// diff -y grype_0.64.1_gojsonstruct new.struct
+// NOTE: we do NOT import "github.com/anchore/grype/grype/presenter/models"
+//
+//	because that would bring in too many dependencies.
 type Document struct {
 	Descriptor     Descriptor `json:"descriptor"`
 	Distro         Distro     `json:"distro"`
@@ -78,12 +86,13 @@ type Descriptor struct {
 				UsingCpes bool `json:"using-cpes"`
 			} `json:"stock"`
 		} `json:"match"`
-		OnlyFixed          bool   `json:"only-fixed"`
-		OnlyNotfixed       bool   `json:"only-notfixed"`
-		Output             string `json:"output"`
-		OutputTemplateFile string `json:"output-template-file"`
-		Platform           string `json:"platform"`
-		Quiet              bool   `json:"quiet"`
+		Name               string   `json:"name"`
+		OnlyFixed          bool     `json:"only-fixed"`
+		OnlyNotfixed       bool     `json:"only-notfixed"`
+		Output             []string `json:"output"`
+		OutputTemplateFile string   `json:"output-template-file"`
+		Platform           string   `json:"platform"`
+		Quiet              bool     `json:"quiet"`
 		Registry           struct {
 			Auth                  []any `json:"auth"`
 			InsecureSkipTlSVerify bool  `json:"insecure-skip-tls-verify"`
