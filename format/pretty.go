@@ -142,13 +142,13 @@ func renderMatchDetails(match *grype.Match) string {
 
 func renderSeverity(severity string) string {
 	switch severity {
-	case "Critical":
+	case "Critical": //nolint:goconst
 		return styles.severityCritical.Render(severity)
-	case "High":
+	case "High": //nolint:goconst
 		return styles.severityHigh.Render(severity)
-	case "Medium":
+	case "Medium": //nolint:goconst
 		return styles.severityMedium.Render(severity)
-	case "Low":
+	case "Low": //nolint:goconst
 		return styles.severityLow.Render(severity)
 	default:
 		return styles.severityOther.Render(severity)
@@ -157,7 +157,7 @@ func renderSeverity(severity string) string {
 
 func renderFixState(fixState string) string {
 	switch fixState {
-	case "fixed":
+	case "fixed": //nolint:goconst
 		return styles.stateFixed.Render("✓ Fix available")
 	case "not-fixed":
 		return styles.stateNotFixed.Render("✗") + styles.faint.Render("Fix not yet available")

@@ -9,6 +9,8 @@ import (
 	"github.com/open-ch/grumble/download"
 	"github.com/open-ch/grumble/parse"
 	"github.com/open-ch/grumble/tui"
+
+	"github.com/charmbracelet/log"
 )
 
 func getExploreCommand() *cobra.Command {
@@ -65,10 +67,16 @@ Explore works in parse and fetch mode:
 	flags := exploreCmd.Flags()
 
 	flags.StringVarP(&path, "input", "i", "", "Path of grype file to parse")
-	exploreCmd.MarkFlagFilename("input")
+	err := exploreCmd.MarkFlagFilename("input")
+	if err != nil {
+		log.Errorf("could not MarkFlagFilename 'input': %v", err)
+	}
 
 	flags.StringP("url", "u", "", "Url of grype report to fetch")
-	viper.BindPFlag("fetchUrl", flags.Lookup("url"))
+	err = viper.BindPFlag("fetchUrl", flags.Lookup("url"))
+	if err != nil {
+		log.Errorf("could not BindFlag 'fetchUrl': %v", err)
+	}
 
 	addAndBindFilterFlags(exploreCmd, filters)
 

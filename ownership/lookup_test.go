@@ -23,8 +23,8 @@ func TestLoadFromCODEOWNERS(t *testing.T) {
 			expectedError:  true,
 		},
 		{
-			name:           "non existant file fails",
-			codeownersPath: "testdata/nonExistantCODEOWNERS",
+			name:           "non existent file fails",
+			codeownersPath: "testdata/nonExistentCODEOWNERS",
 			expectedError:  true,
 		},
 	}

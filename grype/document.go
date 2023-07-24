@@ -8,7 +8,7 @@ import (
 )
 
 // Document allows unmarshalling grype json reports into go.
-// Initial structct auto generated using gojsonstruct and manualy
+// Initial structct auto generated using gojsonstruct and manually
 // split afterwards.
 type Document struct {
 	Descriptor     Descriptor `json:"descriptor"`
@@ -35,7 +35,7 @@ type Descriptor struct {
 			ValidateByHashOnStart bool   `json:"validate-by-hash-on-start"`
 		} `json:"db"`
 		Dev struct {
-			ProfileCpu bool `json:"profile-cpu"`
+			ProfileCPU bool `json:"profile-cpu"`
 			ProfileMem bool `json:"profile-mem"`
 		} `json:"dev"`
 		Distro          string   `json:"distro"`
@@ -86,7 +86,7 @@ type Descriptor struct {
 		Quiet              bool   `json:"quiet"`
 		Registry           struct {
 			Auth                  []any `json:"auth"`
-			InsecureSkipTlsVerify bool  `json:"insecure-skip-tls-verify"`
+			InsecureSkipTlSVerify bool  `json:"insecure-skip-tls-verify"`
 			InsecureUseHTTP       bool  `json:"insecure-use-http"`
 		} `json:"registry"`
 		Search struct {

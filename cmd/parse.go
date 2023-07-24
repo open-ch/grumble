@@ -42,7 +42,10 @@ This is the same as the fetch option but with a local file.
 	}
 
 	cmd.Flags().StringVarP(&path, "input", "i", "", "Path of grype file to parse")
-	cmd.MarkFlagRequired("input")
+	err := cmd.MarkFlagRequired("input")
+	if err != nil {
+		log.Errorf("could not mark 'input' as required flag: %v", err)
+	}
 	addAndBindFilterFlags(cmd, filters)
 	return cmd
 }

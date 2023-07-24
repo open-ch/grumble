@@ -65,7 +65,10 @@ Most filters allow multiple values separated by commas, e.g. --severity Critical
 
 	cmd.Flags().StringVarP(&output, "output", "o", "", "Optional path to save the raw fetched report at (before any filters or formats are applied)")
 	cmd.Flags().StringP("url", "u", "", "Url of grype report to fetch")
-	viper.BindPFlag("fetchUrl", cmd.Flags().Lookup("url"))
+	err := viper.BindPFlag("fetchUrl", cmd.Flags().Lookup("url"))
+	if err != nil {
+		log.Errorf("could not BindFlag 'fetchUrl': %v", err)
+	}
 	addAndBindFilterFlags(cmd, filters)
 
 	return cmd

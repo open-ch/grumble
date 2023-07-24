@@ -39,11 +39,11 @@ Both reports must be local files. Also the default format for this command is js
 			log.Debug("Flags", "filters", filters, "format", outputFormat)
 			beforeReport, err := loadAndFilterReport(before, filters)
 			if err != nil {
-				return fmt.Errorf("Failed to load the before file: %w", err)
+				return fmt.Errorf("failed to load the before file: %w", err)
 			}
 			afterReport, err := loadAndFilterReport(after, filters)
 			if err != nil {
-				return fmt.Errorf("Failed to load the after file: %w", err)
+				return fmt.Errorf("failed to load the after file: %w", err)
 			}
 
 			diff := grype.Diff(beforeReport, afterReport)
@@ -52,7 +52,7 @@ Both reports must be local files. Also the default format for this command is js
 			formatter := format.NewFormatter(outputFormat, os.Stdout)
 			err = formatter.PrintDiff(diff)
 			if err != nil {
-				return fmt.Errorf("Failed to format diff: %w", err)
+				return fmt.Errorf("failed to format diff: %w", err)
 			}
 
 			return nil
@@ -60,11 +60,23 @@ Both reports must be local files. Also the default format for this command is js
 	}
 
 	cmd.Flags().StringVar(&before, "before", "", "Path of grype file before")
-	cmd.MarkFlagRequired("before")
-	cmd.MarkPersistentFlagFilename("before", ".json")
+	err := cmd.MarkFlagRequired("before")
+	if err != nil {
+		log.Errorf("could not MarkFlagRequired: %v", err)
+	}
+	err = cmd.MarkPersistentFlagFilename("before", ".json")
+	if err != nil {
+		log.Errorf("could not MarkPersistentFlagFilename: %v", err)
+	}
 	cmd.Flags().StringVar(&after, "after", "", "Path of grype file after")
-	cmd.MarkFlagRequired("after")
-	cmd.MarkPersistentFlagFilename("after", ".json")
+	err = cmd.MarkFlagRequired("after")
+	if err != nil {
+		log.Errorf("could not MarkFlagRequired: %v", err)
+	}
+	err = cmd.MarkPersistentFlagFilename("after", ".json")
+	if err != nil {
+		log.Errorf("could not MarkPersistentFlagFilename: %v", err)
+	}
 	// Note we override the global flag here because we only want to support 2 formats:
 	cmd.Flags().String("format", "json", "Selects the output format for diff (*json*, prometheus)")
 	addAndBindFilterFlags(cmd, filters)

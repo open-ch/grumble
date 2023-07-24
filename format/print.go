@@ -27,16 +27,16 @@ func NewFormatter(format string, writer io.Writer) *Formatter {
 func (f *Formatter) Print(document *grype.Document) error {
 	var renderFunction func(document *grype.Document) (string, error)
 	switch f.format {
-	case "json":
+	case "json": //nolint:goconst
 		renderFunction = renderJSON
 	case "pretty":
 		renderFunction = renderPretty
-	case "prometheus":
+	case "prometheus": //nolint:goconst
 		renderFunction = renderPrometheus
 	case "short":
 		renderFunction = renderShort
 	default:
-		return fmt.Errorf("Invalid formatter print format configured: %s", f.format)
+		return fmt.Errorf("invalid formatter print format configured: %s", f.format)
 	}
 
 	output, err := renderFunction(document)
@@ -60,7 +60,7 @@ func (f *Formatter) PrintDiff(diff *grype.DocumentDiff) error {
 	case "prometheus":
 		renderFunction = renderDiffPrometheus
 	default:
-		return fmt.Errorf("Invalid formatter print format for DocumentDiff configured: %s", f.format)
+		return fmt.Errorf("invalid formatter print format for DocumentDiff configured: %s", f.format)
 	}
 
 	output, err := renderFunction(diff)

@@ -119,7 +119,10 @@ func initializeConfig(cmd *cobra.Command) error {
 	viper.Set("now", time.Now().Unix())
 
 	// Bind config to env as well
-	viper.BindEnv("fetchUrl")
+	err = viper.BindEnv("fetchUrl")
+	if err != nil {
+		log.Errorf("could not BindEnv for fetchUrl with viper: %v", err)
+	}
 	// For example usernameEnvVar will read GRUMBLE_PASSWORDENVVAR
 	// we don't need viper.MustBindEnv("usernameEnvVar") since we have defaults above
 	viper.SetEnvPrefix("GRUMBLE")
@@ -165,7 +168,10 @@ func getRepositoryRoot() (string, error) {
 // rootCmd.PersistentFlags() transparently
 func syncViperToCommandFlags(cmd *cobra.Command) {
 	flags := cmd.Flags()
-	viper.BindPFlags(flags)
+	err := viper.BindPFlags(flags)
+	if err != nil {
+		log.Errorf("could not bind flags with viper: %v", err)
+	}
 	flags.VisitAll(func(f *pflag.Flag) {
 		if entry, ok := configMap[f.Name]; ok && !f.Changed && viper.IsSet(entry) {
 			val := viper.GetString(entry)
