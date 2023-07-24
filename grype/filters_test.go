@@ -190,7 +190,7 @@ func TestMatchAllFor(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			matched := tc.filters.matchAllFor(&tc.match)
+			matched := tc.filters.MatchAllFor(&tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})

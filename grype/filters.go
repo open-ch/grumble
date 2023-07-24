@@ -38,7 +38,7 @@ func (d *Document) Filter(filters *Filters) *Document {
 	}
 
 	for _, match := range d.Matches {
-		if filters.matchAllFor(&match) {
+		if filters.MatchAllFor(&match) {
 			fd.Matches = append(fd.Matches, match)
 		}
 	}
@@ -46,7 +46,8 @@ func (d *Document) Filter(filters *Filters) *Document {
 	return fd
 }
 
-func (f *Filters) matchAllFor(match *Match) bool {
+// MatchAllFor returns true if all filters return true for the given Match object
+func (f *Filters) MatchAllFor(match *Match) bool {
 	return f.bySeverity(match) && f.byFixState(match) && f.byPathPrefix(match) && f.byCodeowners(match)
 }
 
