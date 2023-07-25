@@ -2,15 +2,15 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"github.com/open-ch/grumble/grype"
-
-	"github.com/open-ch/grumble/download"
-	"github.com/open-ch/grumble/parse"
-	"github.com/open-ch/grumble/tui"
 
 	"github.com/charmbracelet/log"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"github.com/open-ch/grumble/download"
+	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/parse"
+	"github.com/open-ch/grumble/tui"
 )
 
 func getExploreCommand() *cobra.Command {
@@ -43,13 +43,13 @@ Explore works in parse and fetch mode:
 					return fmt.Errorf("required flag \"url\" (or config value fetchUrl) not set")
 				}
 
-				rawReport, err := download.FileFromURL(url)
-				if err != nil {
-					return fmt.Errorf("grumble could not fetch %s: %w", url, err)
+				rawReport, err2 := download.FileFromURL(url)
+				if err2 != nil {
+					return fmt.Errorf("grumble could not fetch %s: %w", url, err2)
 				}
-				grypeReport, err = parse.GrypeReport(rawReport)
-				if err != nil {
-					return err
+				grypeReport, err2 = parse.GrypeReport(rawReport)
+				if err2 != nil {
+					return err2
 				}
 			}
 

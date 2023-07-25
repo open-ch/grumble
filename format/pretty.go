@@ -32,10 +32,10 @@ func renderPretty(document *grype.Document) (string, error) {
 	summary := &summary{
 		dbAge: document.Descriptor.DB.Built,
 	}
-	for _, match := range document.Matches {
-		render := renderMatchPretty(&match)
+	for i := range document.Matches {
+		render := renderMatchPretty(&document.Matches[i])
 		matches = append(matches, render)
-		summary.add(&match)
+		summary.add(&document.Matches[i])
 	}
 	matches = append(matches, renderSummary(summary))
 

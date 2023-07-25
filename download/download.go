@@ -3,11 +3,12 @@ package download
 import (
 	"errors"
 	"fmt"
-	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 // HTTPTimeoutS holds the timeout to use for fetching

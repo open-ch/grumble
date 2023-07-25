@@ -44,7 +44,7 @@ func (f *Formatter) Print(document *grype.Document) error {
 		return err
 	}
 
-	_, err = io.WriteString(f.writer, fmt.Sprintf("%s\n", output))
+	_, err = fmt.Fprintf(f.writer, "%s\n", output)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (f *Formatter) PrintDiff(diff *grype.DocumentDiff) error {
 		return err
 	}
 
-	_, err = io.WriteString(f.writer, fmt.Sprintf("%s\n", output))
+	_, err = fmt.Fprintf(f.writer, "%s\n", output)
 	if err != nil {
 		return err
 	}

@@ -37,9 +37,9 @@ func (d *Document) Filter(filters *Filters) *Document {
 		Source:         d.Source,
 	}
 
-	for _, match := range d.Matches {
-		if filters.MatchAllFor(&match) {
-			fd.Matches = append(fd.Matches, match)
+	for i := range d.Matches {
+		if filters.MatchAllFor(&d.Matches[i]) {
+			fd.Matches = append(fd.Matches, d.Matches[i])
 		}
 	}
 

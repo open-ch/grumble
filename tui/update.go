@@ -1,6 +1,7 @@
 package tui
 
 // revive:disable:modifies-value-receiver The bubbletea Model interface doesn't let us work with pointers
+// golangci-lint: nolint gocritic (no pointers with bubbletea)
 
 import (
 	"encoding/json"
@@ -11,7 +12,7 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) { //nolint:gocritic
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		keyPress := msg.String()
@@ -23,7 +24,7 @@ func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.list.SelectedItem() != nil && m.list.FilterState() != list.Filtering {
 				selectedItem := m.list.SelectedItem().(matchListItem)
 
-				err := openMatchBestURL(&selectedItem.match)
+				err := openMatchBestURL(selectedItem.match)
 				if err != nil {
 					log.Warn("Unable to open Match url", "err", err)
 				}

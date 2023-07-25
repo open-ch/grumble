@@ -29,9 +29,9 @@ type matchBrowserModel struct {
 
 func buildDocumentBrowserModel(d *grype.Document) matchBrowserModel {
 	items := make([]list.Item, len(d.Matches))
-	for i, match := range d.Matches {
+	for i := range d.Matches {
 		items[i] = matchListItem{
-			match: match,
+			match: &d.Matches[i],
 		}
 	}
 
@@ -64,14 +64,14 @@ func (matchBrowserModel) Init() tea.Cmd { return nil }
 // Description(), Title(), FilterValue()
 // https://pkg.go.dev/github.com/charmbracelet/bubbles@v0.15.0/list#DefaultItem
 type matchListItem struct {
-	match grype.Match
+	match *grype.Match
 }
 
 // What the defaultDelegate render of list will display for each entry
-func (i matchListItem) Title() string { return format.RenderMatchShort(&i.match) }
+func (i matchListItem) Title() string { return format.RenderMatchShort(i.match) }
 
 // Description is deplayed as the second line in the list if ShowDescription is enabled
 func (i matchListItem) Description() string { return i.match.Vulnerability.Description }
 
 // FilterValue returns the text to search when using fuzzy find
-func (i matchListItem) FilterValue() string { return format.RenderMatchShort(&i.match) }
+func (i matchListItem) FilterValue() string { return format.RenderMatchShort(i.match) }

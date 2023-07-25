@@ -13,8 +13,8 @@ func renderShort(document *grype.Document) (string, error) {
 	}
 
 	var matches []string
-	for _, match := range document.Matches {
-		render := RenderMatchShort(&match)
+	for i := range document.Matches {
+		render := RenderMatchShort(&document.Matches[i])
 		matches = append(matches, render)
 	}
 
