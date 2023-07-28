@@ -98,6 +98,12 @@ func TestIsOwnedBy(t *testing.T) {
 			expectOwned: true,
 		},
 		{
+			name:        "absolut path owned by single owners (BE-763)",
+			owners:      []string{"@org-name/example-team"},
+			path:        "/example/README.md",
+			expectOwned: true,
+		},
+		{
 			name:        "path owned by one of seveal owners",
 			owners:      []string{"@org-name/default-team", "@org-name/other-team", "@org-name/example-team"},
 			path:        "example/README.md",

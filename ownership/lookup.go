@@ -65,9 +65,7 @@ func LookupFor(repoPath string) ([]string, error) {
 // IsOwnedBy finds out if a path is owned by one of multiple owners
 func IsOwnedBy(repoPath string, ownersList []string) (bool, error) {
 	// repoPath must be relative. Since grype 0.64.0, they send a leading '/'
-	if strings.HasPrefix(repoPath, "/") {
-		repoPath = strings.TrimLeft(repoPath, "/")
-	}
+	repoPath = strings.TrimPrefix(repoPath, "/")
 	if err := initDefaultLookupIfNeeded(); err != nil {
 		return false, err
 	}
