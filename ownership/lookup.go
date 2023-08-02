@@ -47,6 +47,9 @@ func LookupFor(repoPath string) ([]string, error) {
 		return owners, err
 	}
 
+	// path must be relative. Since grype 0.64.0, grype sends a leading '/'
+	repoPath = strings.TrimPrefix(repoPath, "/")
+
 	rule, err := lookup.codeowners.Match(repoPath)
 	if err != nil {
 		return owners, err

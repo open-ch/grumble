@@ -68,6 +68,11 @@ func TestLookupFor(t *testing.T) {
 			path:           "shared/package.json",
 			expectedOwners: "@org-name/example-team,@org-name/other-team",
 		},
+		{
+			name:           "parent owner for sub path with grype 0.64.0 bogus absolute path",
+			path:           "/example/path2/package.json",
+			expectedOwners: "@org-name/example-team",
+		},
 	}
 
 	for _, tc := range tests {
