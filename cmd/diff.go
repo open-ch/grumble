@@ -64,18 +64,10 @@ Both reports must be local files. Also the default format for this command is js
 	if err != nil {
 		log.Errorf("could not MarkFlagRequired: %v", err)
 	}
-	err = cmd.MarkPersistentFlagFilename("before", ".json")
-	if err != nil {
-		log.Errorf("could not MarkPersistentFlagFilename: %v", err)
-	}
 	cmd.Flags().StringVar(&after, "after", "", "Path of grype file after")
 	err = cmd.MarkFlagRequired("after")
 	if err != nil {
 		log.Errorf("could not MarkFlagRequired: %v", err)
-	}
-	err = cmd.MarkPersistentFlagFilename("after", ".json")
-	if err != nil {
-		log.Errorf("could not MarkPersistentFlagFilename: %v", err)
 	}
 	// Note we override the global flag here because we only want to support 2 formats:
 	cmd.Flags().String("format", "json", "Selects the output format for diff (*json*, prometheus)")
