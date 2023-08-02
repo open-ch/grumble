@@ -21,8 +21,8 @@ import (
 type Document struct {
 	Descriptor     Descriptor `json:"descriptor"`
 	Distro         Distro     `json:"distro"`
-	Matches        []Match    `json:"matches"`
-	IgnoredMatches []Match    `json:"ignoredMatches,omitempty"`
+	Matches        []*Match   `json:"matches"`
+	IgnoredMatches []*Match   `json:"ignoredMatches,omitempty"`
 	Source         Source     `json:"source"`
 }
 

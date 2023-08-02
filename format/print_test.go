@@ -135,14 +135,14 @@ func TestPrintDiff(t *testing.T) {
 		{
 			name: "Prometheus: Prints added items as new and removed as remvoed",
 			diff: &grype.DocumentDiff{
-				Added: []grype.Match{{
+				Added: []*grype.Match{{
 					Artifact: grype.Artifact{
 						Locations: []grype.Location{
 							{Path: "test"},
 						},
 					},
 				}},
-				Removed: []grype.Match{{
+				Removed: []*grype.Match{{
 					Artifact: grype.Artifact{
 						Locations: []grype.Location{
 							{Path: "test"},

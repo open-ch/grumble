@@ -19,7 +19,7 @@ func (d *Document) Sort() *Document {
 	sd.Matches = append(sd.Matches, d.Matches...)
 
 	sort.Slice(sd.Matches, func(i, j int) bool {
-		return compareMatches(&sd.Matches[i], &sd.Matches[j])
+		return compareMatches(sd.Matches[i], sd.Matches[j])
 	})
 
 	return sd

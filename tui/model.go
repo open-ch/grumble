@@ -29,9 +29,9 @@ type matchBrowserModel struct {
 
 func buildDocumentBrowserModel(d *grype.Document) matchBrowserModel {
 	items := make([]list.Item, len(d.Matches))
-	for i := range d.Matches {
+	for i, m := range d.Matches {
 		items[i] = matchListItem{
-			match: &d.Matches[i],
+			match: m,
 		}
 	}
 

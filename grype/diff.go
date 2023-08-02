@@ -10,8 +10,8 @@ import (
 // the matches. And further limited to added and removed matches
 // match changes not supported.
 type DocumentDiff struct {
-	Added   []Match `json:"added"`
-	Removed []Match `json:"removed"`
+	Added   []*Match `json:"added"`
+	Removed []*Match `json:"removed"`
 }
 
 // Diff takes 2 reports and returns the difference between them
@@ -26,29 +26,29 @@ func Diff(before, after *Document) (diff *DocumentDiff) {
 	lookupB := buildUniqueMatchKeyLookup(sortedB)
 	lookupA := buildUniqueMatchKeyLookup(sortedA)
 
-	for i := range sortedA.Matches {
-		uid := sortedA.Matches[i].UniqueID()
+	for _, m := range sortedA.Matches {
+		uid := m.UniqueID()
 		_, existsBefore := lookupB[uid]
 		if !existsBefore {
-			diff.Added = append(diff.Added, *enrichWithCodeowners(&sortedA.Matches[i]))
+			diff.Added = append(diff.Added, enrichWithCodeowners(m))
 		}
 	}
 
-	for i := range sortedB.Matches {
-		uid := sortedB.Matches[i].UniqueID()
+	for _, m := range sortedB.Matches {
+		uid := m.UniqueID()
 		_, existsAfter := lookupA[uid]
 		if !existsAfter {
-			diff.Removed = append(diff.Removed, *enrichWithCodeowners(&sortedB.Matches[i]))
+			diff.Removed = append(diff.Removed, enrichWithCodeowners(m))
 		}
 	}
 
 	return diff
 }
 
-func buildUniqueMatchKeyLookup(d *Document) map[string]Match {
-	lookup := map[string]Match{}
-	for i := range d.Matches {
-		lookup[d.Matches[i].UniqueID()] = d.Matches[i]
+func buildUniqueMatchKeyLookup(d *Document) map[string]*Match {
+	lookup := map[string]*Match{}
+	for _, m := range d.Matches {
+		lookup[m.UniqueID()] = m
 	}
 	return lookup
 }

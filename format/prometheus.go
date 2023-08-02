@@ -22,8 +22,8 @@ func renderPrometheus(document *grype.Document) (string, error) {
 	var matches []string
 	keys := make(map[string]bool)
 	matches = append(matches, typeHeader)
-	for i := range document.Matches {
-		render := renderMetric(metric, &document.Matches[i], documentMatchValue)
+	for _, m := range document.Matches {
+		render := renderMetric(metric, m, documentMatchValue)
 		if _, unique := keys[render]; !unique {
 			keys[render] = true
 			matches = append(matches, render)
@@ -41,8 +41,8 @@ func renderDiffPrometheus(diff *grype.DocumentDiff) (string, error) {
 	addedStringTemplate := addedMetric + dimensions
 	addedKeys := make(map[string]bool)
 	metrics = append(metrics, fmt.Sprintf("# TYPE %s gauge", addedMetric))
-	for i := range diff.Added {
-		render := renderMetric(addedStringTemplate, &diff.Added[i], renderTime)
+	for _, a := range diff.Added {
+		render := renderMetric(addedStringTemplate, a, renderTime)
 		if _, unique := addedKeys[render]; !unique {
 			addedKeys[render] = true
 			metrics = append(metrics, render)
@@ -53,8 +53,8 @@ func renderDiffPrometheus(diff *grype.DocumentDiff) (string, error) {
 	removedStringTemplate := removedMetric + dimensions
 	removedKeys := make(map[string]bool)
 	metrics = append(metrics, fmt.Sprintf("# TYPE %s gauge", removedMetric))
-	for i := range diff.Removed {
-		render := renderMetric(removedStringTemplate, &diff.Removed[i], renderTime)
+	for _, r := range diff.Removed {
+		render := renderMetric(removedStringTemplate, r, renderTime)
 		if _, unique := removedKeys[render]; !unique {
 			removedKeys[render] = true
 			metrics = append(metrics, render)

@@ -37,9 +37,9 @@ func (d *Document) Filter(filters *Filters) *Document {
 		Source:         d.Source,
 	}
 
-	for i := range d.Matches {
-		if filters.MatchAllFor(&d.Matches[i]) {
-			fd.Matches = append(fd.Matches, d.Matches[i])
+	for _, m := range d.Matches {
+		if filters.MatchAllFor(m) {
+			fd.Matches = append(fd.Matches, m)
 		}
 	}
 
@@ -54,6 +54,9 @@ func (f *Filters) MatchAllFor(match *Match) bool {
 func (f *Filters) byCodeowners(match *Match) bool {
 	if f.Codeowners == "" {
 		return true
+	}
+	if match == nil {
+		return false
 	}
 
 	ownedByOneOf := strings.Split(f.Codeowners, filterSeparator)
@@ -73,7 +76,15 @@ func (f *Filters) byCodeowners(match *Match) bool {
 }
 
 func (f *Filters) bySeverity(match *Match) bool {
-	if f.Severity == "" || match.Vulnerability.Severity == f.Severity {
+	if f.Severity == "" {
+		// empty severity returns true -> do not change matches, even if nil
+		return true
+	}
+	if match == nil {
+		// severity check cannot be done on nil match. return false.
+		return false
+	}
+	if match.Vulnerability.Severity == f.Severity {
 		return true
 	}
 
@@ -92,7 +103,13 @@ func (f *Filters) bySeverity(match *Match) bool {
 }
 
 func (f *Filters) byFixState(match *Match) bool {
-	if f.FixState == "" || match.Vulnerability.Fix.State == f.FixState {
+	if f.FixState == "" {
+		return true
+	}
+	if match == nil {
+		return false
+	}
+	if match.Vulnerability.Fix.State == f.FixState {
 		return true
 	}
 
@@ -113,6 +130,9 @@ func (f *Filters) byFixState(match *Match) bool {
 func (f *Filters) byPathPrefix(match *Match) bool {
 	if f.PathPrefix == "" {
 		return true
+	}
+	if match == nil {
+		return false
 	}
 
 	if strings.Contains(f.PathPrefix, filterSeparator) {

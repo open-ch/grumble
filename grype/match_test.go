@@ -9,7 +9,7 @@ import (
 func TestMatchUniqueID(t *testing.T) {
 	var tests = []struct {
 		name        string
-		match       Match // Uses testMatches defined in filters_test.go
+		match       *Match // Uses testMatches defined in filters_test.go
 		expectedUID string
 	}{
 		{

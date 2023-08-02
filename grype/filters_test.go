@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var testMatches = map[string]Match{
+var testMatches = map[string]*Match{
 	"low:cve1:fixed": {
 		Vulnerability: Vulnerability{
 			ID:       "low:cve1",
@@ -61,7 +61,7 @@ var testMatches = map[string]Match{
 	},
 }
 var testDocumentAllMatches = Document{
-	Matches: []Match{
+	Matches: []*Match{
 		testMatches["low:cve1"],
 		testMatches["low:cve2"],
 		testMatches["critical:cve1"],
@@ -73,7 +73,7 @@ func TestFilter(t *testing.T) {
 	var tests = []struct {
 		name            string
 		document        *Document
-		expectedMatches []Match
+		expectedMatches []*Match
 		filters         Filters
 	}{
 		{
@@ -94,7 +94,7 @@ func TestFilter(t *testing.T) {
 			name:     "Severity filter all for critical",
 			document: &testDocumentAllMatches,
 			filters:  Filters{Severity: "Critical"},
-			expectedMatches: []Match{
+			expectedMatches: []*Match{
 				testMatches["critical:cve1"],
 				testMatches["critical:cve2"],
 			},
@@ -103,7 +103,7 @@ func TestFilter(t *testing.T) {
 			name:     "Severity+Path+Fix filter each multiple values",
 			document: &testDocumentAllMatches,
 			filters:  Filters{FixState: "invalid,unknown", Severity: "High,Critical", PathPrefix: "wrong/,other/"},
-			expectedMatches: []Match{
+			expectedMatches: []*Match{
 				testMatches["critical:cve2"],
 			},
 		},
@@ -123,7 +123,7 @@ func TestMatchAllFor(t *testing.T) {
 	var tests = []struct {
 		name        string
 		filters     Filters
-		match       Match
+		match       *Match
 		expectMatch bool
 	}{
 		{
@@ -190,7 +190,7 @@ func TestMatchAllFor(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			matched := tc.filters.MatchAllFor(&tc.match)
+			matched := tc.filters.MatchAllFor(tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -201,7 +201,7 @@ func TestByCodeowners(t *testing.T) {
 	var tests = []struct {
 		name        string
 		filters     Filters
-		match       Match
+		match       *Match
 		expectMatch bool
 	}{
 		{
@@ -231,7 +231,7 @@ func TestByCodeowners(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			viper.Set("codeownersPath", "testdata/CODEOWNERS")
-			matched := tc.filters.byCodeowners(&tc.match)
+			matched := tc.filters.byCodeowners(tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -242,7 +242,7 @@ func TestBySeverity(t *testing.T) {
 	var tests = []struct {
 		name        string
 		filters     Filters
-		match       Match
+		match       *Match
 		expectMatch bool
 	}{
 		{
@@ -282,7 +282,7 @@ func TestBySeverity(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			matched := tc.filters.bySeverity(&tc.match)
+			matched := tc.filters.bySeverity(tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -293,7 +293,7 @@ func TestByFixState(t *testing.T) {
 	var tests = []struct {
 		name        string
 		fixState    string
-		match       Match
+		match       *Match
 		expectMatch bool
 	}{
 		{
@@ -341,7 +341,7 @@ func TestByFixState(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			viper.Set("codeownersPath", "testdata/CODEOWNERS")
 			filters := Filters{FixState: tc.fixState}
-			matched := filters.byFixState(&tc.match)
+			matched := filters.byFixState(tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -352,7 +352,7 @@ func TestByPathPrefix(t *testing.T) {
 	var tests = []struct {
 		name        string
 		filters     Filters
-		match       Match
+		match       *Match
 		expectMatch bool
 	}{
 		{
@@ -403,7 +403,7 @@ func TestByPathPrefix(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			matched := tc.filters.byPathPrefix(&tc.match)
+			matched := tc.filters.byPathPrefix(tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
