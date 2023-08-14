@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
@@ -31,6 +32,14 @@ Explore works in parse and fetch mode:
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var grypeReport *grype.Document
 			var err error
+
+			errorList := filters.Validate()
+			if errorList != nil {
+				for _, e := range errorList {
+					log.Error(e)
+				}
+				os.Exit(1)
+			}
 
 			if path != "" {
 				grypeReport, err = parse.GrypeFile(path)

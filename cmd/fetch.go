@@ -29,6 +29,13 @@ One or more filters can be applied to the matches before the results are formatt
 Most filters allow multiple values separated by commas, e.g. --severity Critical,High
 `,
 		Run: func(cmd *cobra.Command, args []string) {
+			errorList := filters.Validate()
+			if errorList != nil {
+				for _, e := range errorList {
+					log.Error(e)
+				}
+				os.Exit(1)
+			}
 			outputFormat := viper.GetString("format")
 			url := viper.GetString("fetchUrl")
 			if url == "" {

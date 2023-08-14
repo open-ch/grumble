@@ -35,6 +35,13 @@ Both reports must be local files. Also the default format for this command is js
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			errorList := filters.Validate()
+			if errorList != nil {
+				for _, e := range errorList {
+					log.Error(e)
+				}
+				os.Exit(1)
+			}
 			outputFormat := viper.GetString("format")
 			log.Debug("Flags", "filters", filters, "format", outputFormat)
 			beforeReport, err := loadAndFilterReport(before, filters)

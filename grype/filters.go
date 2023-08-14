@@ -1,9 +1,14 @@
 package grype
 
 import (
+	"errors"
+	"fmt"
+	"os/exec"
+	"path"
 	"strings"
 
 	"github.com/charmbracelet/log"
+	"github.com/spf13/viper"
 
 	"github.com/open-ch/grumble/ownership"
 )
@@ -154,5 +159,69 @@ func (f *Filters) byPathPrefix(match *Match) bool {
 		}
 	}
 
+	return false
+}
+
+// Validate returns a list of errors if any filter expression
+// is misspelled or could never match.
+// This guards against false positives if users have typos in their filters.
+func (f *Filters) Validate() []error {
+	var errorList []error
+	tests := []struct {
+		content string
+		name    string
+		allowed []string
+	}{
+		{f.FixState, "fix-state", []string{"unknown", "not-fixed", "fixed"}},
+		{f.Severity, "severity", []string{"Critical", "High", "Medium", "Low", "Negligible", "Unknown"}},
+		{f.Codeowners, "codeowners", getCodeowners()},
+	}
+	for i := range tests {
+		newErrors := validateField(tests[i].name, tests[i].content, tests[i].allowed)
+		if newErrors != nil {
+			errorList = append(errorList, newErrors...)
+		}
+	}
+	return errorList
+}
+
+func validateField(name, input string, allowed []string) []error {
+	in := strings.Split(input, ",")
+	var errorList []error
+	for _, s := range in {
+		if s != "" && !sliceContains(allowed, s) {
+			msg := fmt.Sprintf("%s: invalid filter: %s is not in %s", name, s, allowed)
+			errorList = append(errorList, errors.New(msg))
+		}
+	}
+	return errorList
+}
+
+func getCodeowners() []string {
+	codeownersPath := viper.GetString("codeownersPath")
+	repositoryPath := viper.GetString("repositoryPath")
+	if repositoryPath != "" {
+		codeownersPath = path.Join(repositoryPath, codeownersPath)
+	}
+	cmd := fmt.Sprintf("awk '{print $2}' %s | grep '^@' | sort | uniq", codeownersPath)
+	log.Debugf("extracting codeowners with command=%s", cmd)
+	out, err := exec.Command("bash", "-c", cmd).Output()
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	owners := strings.Split(string(out), "\n")
+	log.Debugf("found %d codeowner entries", len(owners))
+	return owners
+}
+
+func sliceContains(s []string, str string) bool {
+	// from Go 1.21.0 on, use slices.Contains() instead!
+	// how nice it would be to use a high level language... ¯\_(ツ)_/¯
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
 	return false
 }

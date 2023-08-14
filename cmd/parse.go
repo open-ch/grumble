@@ -23,6 +23,13 @@ func getParseCommand() *cobra.Command {
 This is the same as the fetch option but with a local file.
 `,
 		Run: func(cmd *cobra.Command, args []string) {
+			errorList := filters.Validate()
+			if errorList != nil {
+				for _, e := range errorList {
+					log.Error(e)
+				}
+				os.Exit(1)
+			}
 			outputFormat := viper.GetString("format")
 			sweetReport, err := parse.GrypeFile(path)
 			if err != nil {
