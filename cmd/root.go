@@ -62,6 +62,7 @@ func GetRootCommand() *cobra.Command {
 			" prometheus metrics for observability.",
 		Long:          logo,
 		SilenceErrors: true, // Avoid ugly double print on unknown commands
+		SilenceUsage:  true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			// Prevent hanging on bootstrap: https://github.com/charmbracelet/lipgloss/issues/73
 			lipgloss.SetHasDarkBackground(termenv.HasDarkBackground())
