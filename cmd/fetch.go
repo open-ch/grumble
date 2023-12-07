@@ -9,13 +9,11 @@ import (
 
 	"github.com/open-ch/grumble/download"
 	"github.com/open-ch/grumble/format"
-	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/parse"
 )
 
 func getFetchCommand() *cobra.Command {
 	output := ""
-	filters := &grype.Filters{}
 
 	cmd := &cobra.Command{
 		Use: "fetch",
@@ -29,6 +27,7 @@ One or more filters can be applied to the matches before the results are formatt
 Most filters allow multiple values separated by commas, e.g. --severity Critical,High
 `,
 		Run: func(cmd *cobra.Command, args []string) {
+			filters := getFilterValues()
 			errorList := filters.Validate()
 			if errorList != nil {
 				for _, e := range errorList {
@@ -76,7 +75,7 @@ Most filters allow multiple values separated by commas, e.g. --severity Critical
 	if err != nil {
 		log.Errorf("could not BindFlag 'fetchUrl': %v", err)
 	}
-	addAndBindFilterFlags(cmd, filters)
+	addAndBindFilterFlags(cmd)
 
 	return cmd
 }

@@ -16,7 +16,6 @@ import (
 
 func getExploreCommand() *cobra.Command {
 	path := ""
-	filters := &grype.Filters{}
 
 	exploreCmd := &cobra.Command{
 		Use:     "explore",
@@ -33,6 +32,7 @@ Explore works in parse and fetch mode:
 			var grypeReport *grype.Document
 			var err error
 
+			filters := getFilterValues()
 			errorList := filters.Validate()
 			if errorList != nil {
 				for _, e := range errorList {
@@ -87,7 +87,7 @@ Explore works in parse and fetch mode:
 		log.Errorf("could not BindFlag 'fetchUrl': %v", err)
 	}
 
-	addAndBindFilterFlags(exploreCmd, filters)
+	addAndBindFilterFlags(exploreCmd)
 
 	exploreCmd.MarkFlagsMutuallyExclusive("input", "url")
 

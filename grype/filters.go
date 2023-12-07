@@ -27,6 +27,14 @@ type Filters struct {
 	Codeowners string
 }
 
+// Filter Flags enums for the CLI and config keys
+const (
+	FixState   = "fix-state"
+	PathPrefix = "path-prefix"
+	Severity   = "severity"
+	Codeowners = "codeowners"
+)
+
 const filterSeparator = ","
 
 // Filter applies the given filters and returns a new document
@@ -172,9 +180,9 @@ func (f *Filters) Validate() []error {
 		name    string
 		allowed []string
 	}{
-		{f.FixState, "fix-state", []string{"unknown", "not-fixed", "fixed"}},
-		{f.Severity, "severity", []string{"Critical", "High", "Medium", "Low", "Negligible", "Unknown"}},
-		{f.Codeowners, "codeowners", getCodeowners()},
+		{f.FixState, FixState, []string{"unknown", "not-fixed", "fixed"}},
+		{f.Severity, Severity, []string{"Critical", "High", "Medium", "Low", "Negligible", "Unknown"}},
+		{f.Codeowners, Codeowners, getCodeowners()},
 	}
 	for i := range tests {
 		newErrors := validateField(tests[i].name, tests[i].content, tests[i].allowed)

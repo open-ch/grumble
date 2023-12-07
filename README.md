@@ -6,7 +6,7 @@
      \______  /__|  |____/|__|_|  /___  /____/\___  >
             \/                  \/    \/          \/
 
-At it's heart grumble is an alternate formatter for [grype]
+At its heart grumble is an alternate formatter for [grype]
 output with a few more features to make it useful in a monorepo setting.
 Grumble has `CODEOWNERS` integration (see [GitHub code owners]) and filtering
 (e.g. to make it easy to show detected vulnerability for one team only).
@@ -71,7 +71,7 @@ ls `go env GOPATH`/bin
 We use viper to store the config so in order of preference we will use:
 1. Flag values (where applicable)
 2. ENV variable
-3. Value in `grumble.config.yaml`
+3. Value in `$HOME/.config/grumble/grumble.config.yaml`
 
 Sample config:
 ```yaml

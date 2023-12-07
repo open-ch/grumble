@@ -16,7 +16,6 @@ import (
 func getDiffCommand() *cobra.Command {
 	before := ""
 	after := ""
-	filters := &grype.Filters{}
 
 	cmd := &cobra.Command{
 		Use:   "diff",
@@ -35,6 +34,7 @@ Both reports must be local files. Also the default format for this command is js
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			filters := getFilterValues()
 			errorList := filters.Validate()
 			if errorList != nil {
 				for _, e := range errorList {
@@ -78,7 +78,7 @@ Both reports must be local files. Also the default format for this command is js
 	}
 	// Note we override the global flag here because we only want to support 2 formats:
 	cmd.Flags().String("format", "json", "Selects the output format for diff (*json*, prometheus)")
-	addAndBindFilterFlags(cmd, filters)
+	addAndBindFilterFlags(cmd)
 	return cmd
 }
 

@@ -8,13 +8,11 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/open-ch/grumble/format"
-	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/parse"
 )
 
 func getParseCommand() *cobra.Command {
 	path := ""
-	filters := &grype.Filters{}
 
 	cmd := &cobra.Command{
 		Use:   "parse",
@@ -23,6 +21,7 @@ func getParseCommand() *cobra.Command {
 This is the same as the fetch option but with a local file.
 `,
 		Run: func(cmd *cobra.Command, args []string) {
+			filters := getFilterValues()
 			errorList := filters.Validate()
 			if errorList != nil {
 				for _, e := range errorList {
@@ -53,6 +52,6 @@ This is the same as the fetch option but with a local file.
 	if err != nil {
 		log.Errorf("could not mark 'input' as required flag: %v", err)
 	}
-	addAndBindFilterFlags(cmd, filters)
+	addAndBindFilterFlags(cmd)
 	return cmd
 }
