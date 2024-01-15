@@ -100,7 +100,7 @@ func renderSummary(s *summary) string {
 func renderMatchHeader(match *grype.Match) string {
 	cve := match.Vulnerability.ID
 	if len(match.Artifact.Locations) != 1 {
-		log.Fatal("unexpected input data, only 1 location supported", "locations", len(match.Artifact.Locations))
+		log.Fatal("unexpected input data only 1 location supported", "locations", len(match.Artifact.Locations), "id", cve)
 	}
 	apaths := match.Artifact.Locations[0].Path
 	codeowners, err := ownership.LookupFor(apaths)
@@ -119,7 +119,7 @@ func renderMatchHeader(match *grype.Match) string {
 
 func renderMatchDetails(match *grype.Match) string {
 	if len(match.Artifact.Locations) != 1 {
-		log.Fatal("unexpected input data, only 1 location supported", "locations", len(match.Artifact.Locations))
+		log.Fatal("unexpected input data only 1 location supported", "locations", len(match.Artifact.Locations), "id", match.Vulnerability.ID)
 	}
 	path := match.Artifact.Locations[0].Path
 

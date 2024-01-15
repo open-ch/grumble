@@ -26,7 +26,7 @@ func RenderMatchShort(match *grype.Match) string {
 	initStyles()
 	cve := match.Vulnerability.ID
 	if len(match.Artifact.Locations) != 1 {
-		log.Fatal("unexpected input data, only 1 location supported", "locations", len(match.Artifact.Locations))
+		log.Fatal("unexpected input data only 1 location supported", "locations", len(match.Artifact.Locations), "id", cve)
 	}
 	path := match.Artifact.Locations[0].Path
 
