@@ -1,0 +1,35 @@
+{
+  "artifacts": [],
+  "artifactRelationships": [],
+  "source": {
+    "id": "34d40fdc6ca13e9a3fa18415db216b50bff047716fae7d95a225c09732fe83fb",
+    "name": "user-image-input",
+    "version": "sha256:2731251dc34951c0e50fcc643b4c5f74922dad1a5d98f302b504cf46cd5d9368",
+    "type": "image",
+    "metadata": {
+      "userInput": "user-image-input",
+      "mediaType": "application/vnd.docker.distribution.manifest.v2+json"
+    }
+  },
+  "distro": {
+    "prettyName": "debian",
+    "name": "debian",
+    "id": "debian",
+    "idLike": [
+      "like!"
+    ],
+    "version": "1.2.3",
+    "versionID": "1.2.3"
+  },
+  "descriptor": {
+    "name": "syft",
+    "version": "v0.42.0-bogus",
+    "configuration": {
+      "config-key": "config-value"
+    }
+  },
+  "schema": {
+    "version": "11.0.1",
+    "url": "https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-11.0.1.json"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "artifacts": [
+    {
+      "id": "80210ebcba92e632",
+      "name": "package-1",
+      "version": "1.0.1",
+      "type": "python",
+      "foundBy": "the-cataloger-1",
+      "locations": [
+        {
+          "path": "/somefile-1.txt",
+          "layerID": "sha256:100d5a55f9032faead28b7427fa3e650e4f0158f86ea89d06e1489df00cb8c6f",
+          "accessPath": "/somefile-1.txt"
+        }
+      ],
+      "licenses": [
+        {
+          "value": "MIT",
+          "spdxExpression": "MIT",
+          "type": "declared",
+          "urls": [],
+          "locations": []
+        }
+      ],
+      "language": "python",
+      "cpes": [
+        "cpe:2.3:*:some:package:1:*:*:*:*:*:*:*"
+      ],
+      "purl": "a-purl-1",
+      "metadataType": "python-package",
+      "metadata": {
+        "name": "package-1"
+      }
+    },
+    {
+      "id": "4b756c6f6fb127a3",
+      "name": "package-2",
+      "version": "2.0.1",
+      "type": "deb",
+      "foundBy": "the-cataloger-2",
+      "locations": [
+        {
+          "path": "/somefile-2.txt",
+          "layerID": "sha256:000fb9200890d3a19138478b20023023c0dce1c54352007c2863716780f049eb",
+          "accessPath": "/somefile-2.txt"
+        }
+      ],
+      "licenses": [],
+      "language": "",
+      "cpes": [
+        "cpe:2.3:*:some:package:2:*:*:*:*:*:*:*"
+      ],
+      "purl": "pkg:deb/debian/package-2@2.0.1",
+      "metadataType": "dpkg-db-entry",
+      "metadata": {
+        "package": "package-2"
+      }
+    }
+  ],
+  "artifactRelationships": [],
+  "source": {
+    "id": "34d40fdc6ca13e9a3fa18415db216b50bff047716fae7d95a225c09732fe83fb",
+    "name": "user-image-input",
+    "version": "sha256:2731251dc34951c0e50fcc643b4c5f74922dad1a5d98f302b504cf46cd5d9368",
+    "type": "image",
+    "metadata": {
+      "userInput": "user-image-input",
+      "mediaType": "application/vnd.docker.distribution.manifest.v2+json"
+    }
+  },
+  "distro": {
+    "prettyName": "debian",
+    "name": "debian",
+    "id": "debian",
+    "idLike": [
+      "like!"
+    ],
+    "version": "1.2.3",
+    "versionID": "1.2.3"
+  },
+  "descriptor": {
+    "name": "syft",
+    "version": "v0.42.0-bogus",
+    "configuration": {
+      "config-key": "config-value"
+    }
+  },
+  "schema": {
+    "version": "11.0.1",
+    "url": "https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-11.0.1.json"
+  }
+}

@@ -2,15 +2,11 @@ package parse
 
 import (
 	"encoding/json"
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
-
-const jsonIndentSpacing = "    "
-const jsonPrefix = ""
 
 func TestGrypeFile(t *testing.T) {
 	var tests = []struct {
@@ -21,22 +17,22 @@ func TestGrypeFile(t *testing.T) {
 	}{
 		{
 			name:           "Grype without matches reserialized to pretty printed json",
-			inputFile:      "testdata/grype_empty.json",
-			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble_grype_empty.json")),
+			inputFile:      "testdata/grype/grype_empty.json",
+			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble/grumble_grype_empty.json")),
 		},
 		{
 			name:           "Grype matches are reserialized",
-			inputFile:      "testdata/grype_match.json",
-			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble_grype_match.json")),
+			inputFile:      "testdata/grype/grype_match.json",
+			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble/grumble_grype_match.json")),
 		},
 		{
 			name:           "Grype ignored matches are reserialized",
-			inputFile:      "testdata/grype_ignored_match.json",
-			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble_grype_ignored_match.json")),
+			inputFile:      "testdata/grype/grype_ignored_match.json",
+			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble/grumble_grype_ignored_match.json")),
 		},
 		{
 			name:          "Fails on invalid json",
-			inputFile:     "testdata/grype_invalid_json.json",
+			inputFile:     "testdata/grype/grype_invalid_json.json",
 			expectedError: true,
 		},
 	}
@@ -67,8 +63,8 @@ func TestGrypeReport(t *testing.T) {
 	}{
 		{
 			name:           "Pretty print json content",
-			input:          getTestReport(t, "testdata/grype_empty.json"),
-			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble_grype_empty.json")),
+			input:          getTestReport(t, "testdata/grype/grype_empty.json"),
+			expectedOutput: strings.TrimSpace(getTestReport(t, "testdata/grumble/grumble_grype_empty.json")),
 		},
 		{
 			name:          "Fails on invalid json",
@@ -92,12 +88,4 @@ func TestGrypeReport(t *testing.T) {
 			}
 		})
 	}
-}
-
-func getTestReport(t *testing.T, path string) string {
-	t.Helper()
-
-	rawBytes, err := os.ReadFile(path)
-	assert.NoError(t, err)
-	return string(rawBytes)
 }
