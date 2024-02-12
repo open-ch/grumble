@@ -13,7 +13,7 @@ import (
 // in with bogus data from syft_empty.json. Compare the datastructure read against an expected document
 func emptySyftDocument() *syft.Document {
 	return &syft.Document{
-		Schema: syft.Schema{Version: "11.0.1", URL: "https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-11.0.1.json"},
+		Schema: syft.Schema{Version: "13.0.0", URL: "https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-13.0.0.json"},
 		Source: syft.Source{
 			ID:       "34d40fdc6ca13e9a3fa18415db216b50bff047716fae7d95a225c09732fe83fb",
 			Name:     "user-image-input",
