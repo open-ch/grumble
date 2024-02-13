@@ -70,8 +70,10 @@ func syftDocumentWithPackages() *syft.Document {
 						AccessPath: "/somefile-1.txt"}}},
 				Licenses: []syft.License{{Value: "MIT", SPDXExpression: "MIT", Type: "declared", URLs: []string{}, Locations: []syft.Location{}}},
 				Language: "python",
-				CPEs:     []string{"cpe:2.3:*:some:package:1:*:*:*:*:*:*:*"},
-				PURL:     "a-purl-1",
+				CPEs: []syft.CPE{
+					{Value: "cpe:2.3:*:some:package:1:*:*:*:*:*:*:*"},
+				},
+				PURL: "a-purl-1",
 			},
 			PackageCustomData: syft.PackageCustomData{
 				MetadataType: "python-package",
@@ -93,8 +95,10 @@ func syftDocumentWithPackages() *syft.Document {
 						AccessPath: "/somefile-2.txt"}}},
 				Licenses: []syft.License{},
 				Language: "",
-				CPEs:     []string{"cpe:2.3:*:some:package:2:*:*:*:*:*:*:*"},
-				PURL:     "pkg:deb/debian/package-2@2.0.1",
+				CPEs: []syft.CPE{
+					{Value: "cpe:2.3:*:some:package:2:*:*:*:*:*:*:*"},
+				},
+				PURL: "pkg:deb/debian/package-2@2.0.1",
 			},
 			PackageCustomData: syft.PackageCustomData{
 				MetadataType: "dpkg-db-entry",

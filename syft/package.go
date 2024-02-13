@@ -2,6 +2,7 @@ package syft
 
 import (
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -22,8 +23,16 @@ type PackageBasicData struct {
 	Locations locations `json:"locations"`
 	Licenses  licenses  `json:"licenses"`
 	Language  string    `json:"language"`
-	CPEs      []string  `json:"cpes"`
+	CPEs      cpes      `json:"cpes"`
 	PURL      string    `json:"purl"`
+}
+
+type cpes []CPE
+
+// CPE represents a Common Platform Enumeration, with the source that has generated it
+type CPE struct {
+	Value  string `json:"cpe"`
+	Source string `json:"source,omitempty"`
 }
 
 type licenses []License
@@ -43,6 +52,29 @@ type License struct {
 type PackageCustomData struct {
 	MetadataType string `json:"metadataType,omitempty"`
 	Metadata     any    `json:"metadata,omitempty"`
+}
+
+func sourcedCPESfromSimpleCPEs(simpleCPEs []string) []CPE {
+	var result []CPE
+	for _, s := range simpleCPEs {
+		result = append(result, CPE{
+			Value: s,
+		})
+	}
+	return result
+}
+
+func (c *cpes) UnmarshalJSON(b []byte) error {
+	var cs []CPE
+	if err := json.Unmarshal(b, &cs); err != nil {
+		var simpleCPEs []string
+		if err := json.Unmarshal(b, &simpleCPEs); err != nil {
+			return fmt.Errorf("unable to unmarshal cpes: %w", err)
+		}
+		cs = sourcedCPESfromSimpleCPEs(simpleCPEs)
+	}
+	*c = cs
+	return nil
 }
 
 // UniqueID returns a string that uniquely identifies an artifact
