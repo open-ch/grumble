@@ -57,7 +57,7 @@ func GetRootCommand() *cobra.Command {
 
 	rootCmd := &cobra.Command{
 		Use: "grumble",
-		Short: "Grumble is a tool to parse and explore grype json vulnerability reports." +
+		Short: "Grumble is a tool to parse and explore grype and syft reports." +
 			" It allows quickly filtering, enriching with CODEOWNERS as well as converting to" +
 			" prometheus metrics for observability.",
 		Long:          logo,
@@ -73,7 +73,8 @@ func GetRootCommand() *cobra.Command {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 
 	rootCmd.AddCommand(getDevCommands())
-	rootCmd.AddCommand(getDiffCommand())
+	rootCmd.AddCommand(getGrypeDiffCommand())
+	rootCmd.AddCommand(getSyftDiffCommand())
 	rootCmd.AddCommand(getExploreCommand())
 	rootCmd.AddCommand(getFetchCommand())
 	rootCmd.AddCommand(getParseCommand())

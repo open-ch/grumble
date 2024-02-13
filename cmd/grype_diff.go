@@ -3,24 +3,23 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"github.com/open-ch/grumble/format"
+	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/parse"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	"github.com/open-ch/grumble/format"
-	"github.com/open-ch/grumble/grype"
-	"github.com/open-ch/grumble/parse"
 )
 
-func getDiffCommand() *cobra.Command {
+func getGrypeDiffCommand() *cobra.Command {
 	before := ""
 	after := ""
 
 	cmd := &cobra.Command{
-		Use:   "diff",
+		Use:   "grype-diff",
 		Short: "diff between 2 grype reports",
-		Long: `diff takes two reports and returns the differences in vulnerabilities between them.
+		Long: `grype-diff takes two reports and returns the differences in vulnerabilities between them.
 This includes added and removed vulnerabilities, other elements of the report are not compared or included.
 Both reports must be local files. Also the default format for this command is json.`,
 		PreRunE: func(cmd *cobra.Command, _ []string) error {

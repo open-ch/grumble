@@ -30,3 +30,16 @@ func SyftSBOM(rawJSON []byte) (*syft.Document, error) {
 
 	return syftDocument, nil
 }
+
+// WriteSyftFile takes a syft document and a path and writes the document on disk in json format
+func WriteSyftFile(document *syft.Document, path string) error {
+	rawJSON, err := json.Marshal(document)
+	if err != nil {
+		return fmt.Errorf("grumble cannot read document: %w", err)
+	}
+	err = os.WriteFile(path, rawJSON, 0600)
+	if err != nil {
+		return fmt.Errorf("grumble cannot write document: %w", err)
+	}
+	return nil
+}
