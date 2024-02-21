@@ -10,7 +10,7 @@ require (
 	github.com/hmarr/codeowners v1.1.2
 	github.com/jarcoal/httpmock v1.3.0
 	github.com/muesli/termenv v0.15.2
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
