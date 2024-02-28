@@ -2,6 +2,8 @@ package parse
 
 import (
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -88,4 +90,34 @@ func TestGrypeReport(t *testing.T) {
 			}
 		})
 	}
+}
+
+func createTmpFolder(t *testing.T) string {
+	t.Helper()
+	testFolderPath, err := os.MkdirTemp("", "GrypeTest")
+	assert.NoError(t, err)
+
+	return testFolderPath
+}
+
+func TestWriteGrypeFile(t *testing.T) {
+	t.Run("TestWriteGrypeFile", func(t *testing.T) {
+		testFolder := createTmpFolder(t)
+		defer os.RemoveAll(testFolder)
+
+		// Read the source file
+		grypeDocument, err := GrypeFile("testdata/grype/grype_match.json")
+		assert.NoError(t, err)
+
+		// Write the file
+		err = WriteGrypeFile(grypeDocument, filepath.Join(testFolder, "grype-write-test.json"))
+		assert.NoError(t, err)
+
+		// Read the written file
+		writtenGrypeDocument, err := GrypeFile(filepath.Join(testFolder, "grype-write-test.json"))
+		assert.NoError(t, err)
+
+		// Compare the file contents
+		assert.Equal(t, grypeDocument, writtenGrypeDocument)
+	})
 }

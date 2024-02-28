@@ -12,7 +12,7 @@ import (
 func SyftFile(path string) (*syft.Document, error) {
 	rawJSON, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("grumble cannot load document: %w", err)
+		return nil, fmt.Errorf("grumble cannot load Syft document: %w", err)
 	}
 
 	return SyftSBOM(rawJSON)
@@ -25,7 +25,7 @@ func SyftSBOM(rawJSON []byte) (*syft.Document, error) {
 
 	err := json.Unmarshal(rawJSON, syftDocument)
 	if err != nil {
-		return nil, fmt.Errorf("grumble cannot parse document: %w", err)
+		return nil, fmt.Errorf("grumble cannot parse Syft document: %w", err)
 	}
 
 	return syftDocument, nil
@@ -35,11 +35,11 @@ func SyftSBOM(rawJSON []byte) (*syft.Document, error) {
 func WriteSyftFile(document *syft.Document, path string) error {
 	rawJSON, err := json.Marshal(document)
 	if err != nil {
-		return fmt.Errorf("grumble cannot read document: %w", err)
+		return fmt.Errorf("grumble cannot read Syft document: %w", err)
 	}
 	err = os.WriteFile(path, rawJSON, 0600)
 	if err != nil {
-		return fmt.Errorf("grumble cannot write document: %w", err)
+		return fmt.Errorf("grumble cannot write Syft document: %w", err)
 	}
 	return nil
 }

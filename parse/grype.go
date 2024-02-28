@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-
 	"github.com/open-ch/grumble/grype"
 )
 
@@ -13,7 +12,7 @@ import (
 func GrypeFile(path string) (*grype.Document, error) {
 	rawJSON, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("grumble cannot load document: %w", err)
+		return nil, fmt.Errorf("grumble cannot load Grype document: %w", err)
 	}
 
 	return GrypeReport(rawJSON)
@@ -26,8 +25,21 @@ func GrypeReport(rawJSON []byte) (*grype.Document, error) {
 
 	err := json.Unmarshal(rawJSON, grypeDocument)
 	if err != nil {
-		return nil, fmt.Errorf("grumble cannot parse document: %w", err)
+		return nil, fmt.Errorf("grumble cannot parse Grype document: %w", err)
 	}
 
 	return grypeDocument, nil
+}
+
+// WriteGrypeFile takes a grype document and a path and writes the document on disk in json format
+func WriteGrypeFile(document *grype.Document, path string) error {
+	rawJSON, err := json.Marshal(document)
+	if err != nil {
+		return fmt.Errorf("grumble cannot read Grype document: %w", err)
+	}
+	err = os.WriteFile(path, rawJSON, 0600)
+	if err != nil {
+		return fmt.Errorf("grumble cannot write Grype document: %w", err)
+	}
+	return nil
 }
