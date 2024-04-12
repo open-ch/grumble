@@ -1,9 +1,11 @@
 package cmd
 
-import (
-	"github.com/spf13/cobra"
+//revive:disable:unused-parameter cmd parameters are used in the cobra command
 
+import (
 	"github.com/open-ch/grumble/format"
+
+	"github.com/spf13/cobra"
 )
 
 func getDevCommands() *cobra.Command {

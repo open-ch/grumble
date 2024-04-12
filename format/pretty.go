@@ -2,14 +2,14 @@ package format
 
 import (
 	"fmt"
+	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/ownership"
+	"github.com/open-ch/grumble/syft"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
-
-	"github.com/open-ch/grumble/grype"
-	"github.com/open-ch/grumble/ownership"
 )
 
 type summary struct {
@@ -22,13 +22,23 @@ type summary struct {
 	dbAge    time.Time
 }
 
-func renderPretty(document *grype.Document) (string, error) {
+func renderPretty[T PrintDocument](document T) (string, error) {
+	switch castedMatch := any(document).(type) {
+	case *grype.Document:
+		return renderPrettyGrype(castedMatch)
+	case *syft.Document:
+		return renderPrettySyft(castedMatch)
+	}
+	return "", fmt.Errorf("unknown document type")
+}
+
+func renderPrettyGrype(document *grype.Document) (string, error) {
 	initStyles()
 	if len(document.Matches) == 0 {
 		return styles.emptyBox.Render(lipgloss.JoinVertical(lipgloss.Left, "No matches in document", getSquirel())), nil
 	}
 
-	var matches []string
+	var matches = make([]string, 0)
 	summary := &summary{
 		dbAge: document.Descriptor.DB.Built,
 	}
@@ -42,6 +52,10 @@ func renderPretty(document *grype.Document) (string, error) {
 	return styles.reportBox.Render(lipgloss.JoinVertical(lipgloss.Left,
 		matches...,
 	)), nil
+}
+
+func renderPrettySyft(document *syft.Document) (string, error) {
+	return "", fmt.Errorf("syft document rendering not implemented, cannot render %s", document.Descriptor)
 }
 
 func renderMatchPretty(match *grype.Match) string {

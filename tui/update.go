@@ -1,7 +1,9 @@
 package tui
 
 // revive:disable:modifies-value-receiver The bubbletea Model interface doesn't let us work with pointers
-// golangci-lint: nolint gocritic (no pointers with bubbletea)
+// revive:disable:unchecked-type-assertion
+// revive:disable:cyclomatic
+// golangci-lint: nolint gocritic forcetypeassert (no pointers with bubbletea)
 
 import (
 	"encoding/json"
@@ -12,7 +14,8 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) { //nolint:gocritic
+//nolint:cyclop
+func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) { //nolint:gocritic,gocyclo
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		keyPress := msg.String()
@@ -22,8 +25,11 @@ func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) { //nolint:g
 
 		case "o":
 			if m.list.SelectedItem() != nil && m.list.FilterState() != list.Filtering {
-				selectedItem := m.list.SelectedItem().(matchListItem)
-
+				selectedItem, ok := m.list.SelectedItem().(matchListItem)
+				if !ok {
+					log.Errorf("Unable to cast selectedItem to matchListItem: %T", m.list.SelectedItem())
+					break
+				}
 				err := openMatchBestURL(selectedItem.match)
 				if err != nil {
 					log.Warn("Unable to open Match url", "err", err)
@@ -32,7 +38,11 @@ func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) { //nolint:g
 
 		case "enter":
 			if m.list.SelectedItem() != nil && m.list.FilterState() != list.Filtering {
-				selectedItem := m.list.SelectedItem().(matchListItem)
+				selectedItem, ok := m.list.SelectedItem().(matchListItem)
+				if !ok {
+					log.Errorf("Unable to cast selectedItem to matchListItem: %T", m.list.SelectedItem())
+					break
+				}
 
 				rawJSON, err := json.MarshalIndent(selectedItem.match, "", "    ")
 				if err != nil {

@@ -1,10 +1,13 @@
 package ownership
 
 import (
+	"fmt"
 	"os"
+	"os/exec"
 	"path"
 	"strings"
 
+	"github.com/charmbracelet/log"
 	"github.com/hmarr/codeowners"
 	"github.com/spf13/viper"
 )
@@ -15,6 +18,8 @@ type Lookup struct {
 }
 
 // Default lookup singleton
+//
+//nolint:gochecknoglobals // not worth refactoring at the moment
 var lookup *Lookup
 
 // LoadFromCODEOWNERS builds a new ownership Lookup from a codeowners file.
@@ -42,23 +47,22 @@ func SetLookup(l *Lookup) {
 // LookupFor returns the codeowners for a given path
 // rendered as a comma separated string if multiple.
 func LookupFor(repoPath string) ([]string, error) {
-	var owners []string
 	if err := initDefaultLookupIfNeeded(); err != nil {
-		return owners, err
+		return []string{}, err
 	}
-
 	// path must be relative. Since grype 0.64.0, grype sends a leading '/'
 	repoPath = strings.TrimPrefix(repoPath, "/")
 
 	rule, err := lookup.codeowners.Match(repoPath)
 	if err != nil {
-		return owners, err
+		return []string{}, err
 	}
 
 	if rule == nil {
-		return owners, nil
+		return []string{}, nil
 	}
 
+	var owners = make([]string, 0)
 	for _, owner := range rule.Owners {
 		owners = append(owners, owner.String())
 	}
@@ -88,6 +92,25 @@ func IsOwnedBy(repoPath string, ownersList []string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+// GetCodeowners returns the list of codeowners from the codeowners file
+func GetCodeowners() []string {
+	codeownersPath := viper.GetString("codeownersPath")
+	repositoryPath := viper.GetString("repositoryPath")
+	if repositoryPath != "" {
+		codeownersPath = path.Join(repositoryPath, codeownersPath)
+	}
+	cmd := fmt.Sprintf("awk '{print $2}' %s | grep '^@' | sort | uniq", codeownersPath)
+	log.Debugf("extracting codeowners with command=%s", cmd)
+	out, err := exec.Command("bash", "-c", cmd).Output()
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	owners := strings.Split(string(out), "\n")
+	log.Debugf("found %d codeowner entries", len(owners))
+	return owners
 }
 
 func initDefaultLookupIfNeeded() error {

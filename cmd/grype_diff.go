@@ -1,8 +1,11 @@
 package cmd
 
+//revive:disable:unused-parameter cmd parameters are used in the cobra command
+
 import (
 	"fmt"
 	"os"
+	"github.com/open-ch/grumble/filters"
 	"github.com/open-ch/grumble/format"
 	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/parse"
@@ -33,8 +36,8 @@ Both reports must be local files. Also the default format for this command is js
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			filters := getFilterValues()
-			errorList := filters.Validate()
+			filtersValues := getFilterValues()
+			errorList := filters.Validate(filtersValues)
 			if errorList != nil {
 				for _, e := range errorList {
 					log.Error(e)
@@ -42,12 +45,12 @@ Both reports must be local files. Also the default format for this command is js
 				os.Exit(1)
 			}
 			outputFormat := viper.GetString("format")
-			log.Debug("Flags", "filters", filters, "format", outputFormat)
-			beforeReport, err := loadAndFilterReport(before, filters)
+			log.Debug("Flags", "filters", filtersValues, "format", outputFormat)
+			beforeReport, err := loadAndFilterReport(before, filtersValues)
 			if err != nil {
 				return fmt.Errorf("failed to load the before file: %w", err)
 			}
-			afterReport, err := loadAndFilterReport(after, filters)
+			afterReport, err := loadAndFilterReport(after, filtersValues)
 			if err != nil {
 				return fmt.Errorf("failed to load the after file: %w", err)
 			}
@@ -81,11 +84,11 @@ Both reports must be local files. Also the default format for this command is js
 	return cmd
 }
 
-func loadAndFilterReport(path string, filters *grype.Filters) (*grype.Document, error) {
+func loadAndFilterReport(path string, filtersValues *filters.Filters) (*grype.Document, error) {
 	report, err := parse.GrypeFile(path)
 	if err != nil {
 		return nil, err
 	}
-	filteredReport := report.Filter(filters)
+	filteredReport := report.Filter(filtersValues)
 	return filteredReport, nil
 }

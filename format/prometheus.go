@@ -1,35 +1,38 @@
 package format
 
 import (
+	"errors"
 	"fmt"
+	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/ownership"
 	"strings"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/viper"
-
-	"github.com/open-ch/grumble/grype"
-	"github.com/open-ch/grumble/ownership"
 )
 
 const dimensions = "{id=\"%s\",severity=\"%s\",artifact=\"%s\",licenses=\"%s\",path=\"%s\",codeowners=\"%s\"} %d"
 const documentMatchValue = 1
 
-func renderPrometheus(document *grype.Document) (string, error) {
-	metricName := viper.GetString("prometheusMetricName")
-	typeHeader := fmt.Sprintf("# TYPE %s gauge", metricName)
-	metric := metricName + dimensions
+func renderPrometheus[T PrintDocument](document T) (string, error) {
+	if document, ok := any(document).(*grype.Document); ok {
+		metricName := viper.GetString("prometheusMetricName")
+		typeHeader := fmt.Sprintf("# TYPE %s gauge", metricName)
+		metric := metricName + dimensions
 
-	var matches []string
-	keys := make(map[string]bool)
-	matches = append(matches, typeHeader)
-	for _, m := range document.Matches {
-		render := renderMetric(metric, m, documentMatchValue)
-		if _, unique := keys[render]; !unique {
-			keys[render] = true
-			matches = append(matches, render)
+		var matches []string
+		keys := make(map[string]bool)
+		matches = append(matches, typeHeader)
+		for _, m := range document.Matches {
+			render := renderMetric(metric, m, documentMatchValue)
+			if _, unique := keys[render]; !unique {
+				keys[render] = true
+				matches = append(matches, render)
+			}
 		}
+		return strings.Join(matches, "\n"), nil
 	}
-	return strings.Join(matches, "\n"), nil
+	return "", errors.New("unknown document type")
 }
 
 func renderDiffPrometheus(diff *grype.DocumentDiff) (string, error) {

@@ -2,11 +2,10 @@ package format
 
 import (
 	"fmt"
+	"github.com/open-ch/grumble/grype"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
-
-	"github.com/open-ch/grumble/grype"
 )
 
 type colorScheme struct {
@@ -27,6 +26,10 @@ type colorScheme struct {
 	backgroundContrast lipgloss.AdaptiveColor
 }
 
+const lipglossStyleWidth = 15
+const lipglossStylePadding = 1
+
+//nolint:gochecknoglobals // not worth refactoring at the moment
 var colors = colorScheme{
 	name:      "default",
 	highlight: lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"},
@@ -51,8 +54,8 @@ var colors = colorScheme{
 func DisplayColorSchemes() {
 	cs := colors
 	bold := lipgloss.NewStyle().Bold(true)
-	darkBox := lipgloss.NewStyle().Width(15).Background(lipgloss.Color(cs.background.Dark)).Padding(1)
-	lightBox := lipgloss.NewStyle().Width(15).Background(lipgloss.Color(cs.background.Light)).Padding(1)
+	darkBox := lipgloss.NewStyle().Width(lipglossStyleWidth).Background(lipgloss.Color(cs.background.Dark)).Padding(lipglossStylePadding)
+	lightBox := lipgloss.NewStyle().Width(lipglossStyleWidth).Background(lipgloss.Color(cs.background.Light)).Padding(lipglossStylePadding)
 
 	log.Infof("ColorScheme test for %s:", bold.Render(cs.name))
 	textColors := lipgloss.JoinVertical(lipgloss.Left,
@@ -77,7 +80,7 @@ func DisplayColorSchemes() {
 }
 
 func colorText(text string, color lipgloss.AdaptiveColor) string {
-	style := lipgloss.NewStyle().Bold(true).Foreground(color).Width(15)
+	style := lipgloss.NewStyle().Bold(true).Foreground(color).Width(lipglossStyleWidth)
 	return style.Render(text)
 }
 

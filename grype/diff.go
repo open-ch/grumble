@@ -1,9 +1,9 @@
 package grype
 
 import (
-	"github.com/charmbracelet/log"
-
 	"github.com/open-ch/grumble/ownership"
+
+	"github.com/charmbracelet/log"
 )
 
 // DocumentDiff holds the difference between two documents limited to
@@ -17,8 +17,8 @@ type DocumentDiff struct {
 // Diff takes 2 reports and returns the difference between them
 // for vulnerabilities. This is limited to added and removed.
 // Vulnerabilities are considered unique by combining:
-func Diff(before, after *Document) (diff *DocumentDiff) {
-	diff = &DocumentDiff{}
+func Diff(before, after *Document) *DocumentDiff {
+	diff := &DocumentDiff{}
 
 	sortedB := before.Sort()
 	sortedA := after.Sort()

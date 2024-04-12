@@ -1,17 +1,19 @@
 package cmd
 
+//revive:disable:unused-parameter cmd parameters are used in the cobra command
+
 import (
 	"fmt"
 	"os"
+	"github.com/open-ch/grumble/download"
+	"github.com/open-ch/grumble/filters"
+	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/parse"
+	"github.com/open-ch/grumble/tui"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	"github.com/open-ch/grumble/download"
-	"github.com/open-ch/grumble/grype"
-	"github.com/open-ch/grumble/parse"
-	"github.com/open-ch/grumble/tui"
 )
 
 func getExploreCommand() *cobra.Command {
@@ -32,8 +34,8 @@ Explore works in parse and fetch mode:
 			var grypeReport *grype.Document
 			var err error
 
-			filters := getFilterValues()
-			errorList := filters.Validate()
+			filtersValues := getFilterValues()
+			errorList := filters.Validate(filtersValues)
 			if errorList != nil {
 				for _, e := range errorList {
 					log.Error(e)
@@ -41,6 +43,7 @@ Explore works in parse and fetch mode:
 				os.Exit(1)
 			}
 
+			//nolint:nestif
 			if path != "" {
 				grypeReport, err = parse.GrypeFile(path)
 				if err != nil {
@@ -62,7 +65,7 @@ Explore works in parse and fetch mode:
 				}
 			}
 
-			filteredResults := grypeReport.Filter(filters)
+			filteredResults := grypeReport.Filter(filtersValues)
 			sortedResults := filteredResults.Sort()
 			err = tui.Explore(sortedResults)
 			if err != nil {

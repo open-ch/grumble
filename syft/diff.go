@@ -14,6 +14,8 @@ func prepareDiff(d *Document) *Document {
 
 // Diff takes 2 syft reports and returns the difference between them
 // for introduced or removed dependencies.
+//
+//nolint:nonamedreturns // revive and golint disagree on this
 func Diff(before, after *Document) (addedArtifacts, removedArtifacts *Document) {
 	// Sort the packages in the documents
 	oldDocument := before.Sort()
@@ -32,7 +34,7 @@ func Diff(before, after *Document) (addedArtifacts, removedArtifacts *Document) 
 func createDifferenceFor(base *Document,
 	inputDocument *Document,
 	packages map[string]*Package,
-) (result *Document) {
+) *Document {
 	// Contains all the relationships in which a specific package is a parent
 	parentRelationshipLookup := buildParentRelationshipLookup(inputDocument)
 	// Contains all the relationships in which a specific package is a child

@@ -1,0 +1,3 @@
+# CODEOWNERS File for unit tests
+/example/           @org-name/example-team
+/other/             @org-name/other-team

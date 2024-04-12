@@ -1,7 +1,7 @@
 package grype
 
 import (
-	"errors"
+	"github.com/open-ch/grumble/filters"
 	"testing"
 
 	"github.com/spf13/viper"
@@ -75,7 +75,7 @@ func TestFilter(t *testing.T) {
 		name            string
 		document        *Document
 		expectedMatches []*Match
-		filters         Filters
+		filters         filters.Filters
 	}{
 		{
 			name:     "Empty filters return empty document empty results",
@@ -89,12 +89,12 @@ func TestFilter(t *testing.T) {
 		{
 			name:     "Severity filter nothing for medium",
 			document: &testDocumentAllMatches,
-			filters:  Filters{Severity: "Medium"},
+			filters:  filters.Filters{Severity: "Medium"},
 		},
 		{
 			name:     "Severity filter all for critical",
 			document: &testDocumentAllMatches,
-			filters:  Filters{Severity: "Critical"},
+			filters:  filters.Filters{Severity: "Critical"},
 			expectedMatches: []*Match{
 				testMatches["critical:cve1"],
 				testMatches["critical:cve2"],
@@ -103,7 +103,7 @@ func TestFilter(t *testing.T) {
 		{
 			name:     "Severity+Path+Fix filter each multiple values",
 			document: &testDocumentAllMatches,
-			filters:  Filters{FixState: "invalid,unknown", Severity: "High,Critical", PathPrefix: "wrong/,other/"},
+			filters:  filters.Filters{FixState: "invalid,unknown", Severity: "High,Critical", PathPrefix: "wrong/,other/"},
 			expectedMatches: []*Match{
 				testMatches["critical:cve2"],
 			},
@@ -123,7 +123,7 @@ func TestFilter(t *testing.T) {
 func TestMatchAllFor(t *testing.T) {
 	var tests = []struct {
 		name        string
-		filters     Filters
+		filters     filters.Filters
 		match       *Match
 		expectMatch bool
 	}{
@@ -135,63 +135,63 @@ func TestMatchAllFor(t *testing.T) {
 		{
 			name:        "Single FixState filter match",
 			match:       testMatches["high:cve1:fixed"],
-			filters:     Filters{FixState: "fixed"},
+			filters:     filters.Filters{FixState: "fixed"},
 			expectMatch: true,
 		},
 		{
 			name:    "Single FixState filter mismatch",
 			match:   testMatches["high:cve1:fixed"],
-			filters: Filters{FixState: "unknown"},
+			filters: filters.Filters{FixState: "unknown"},
 		},
 		{
 			name:        "Single Severity filter match",
 			match:       testMatches["high:cve1:fixed"],
-			filters:     Filters{Severity: "High"},
+			filters:     filters.Filters{Severity: "High"},
 			expectMatch: true,
 		},
 		{
 			name:    "Single Severity filter mismatch",
 			match:   testMatches["high:cve1:fixed"],
-			filters: Filters{Severity: "Low"},
+			filters: filters.Filters{Severity: "Low"},
 		},
 		{
 			name:        "Single PathPrefix filter match",
 			match:       testMatches["high:cve1:fixed"],
-			filters:     Filters{PathPrefix: "example/path"},
+			filters:     filters.Filters{PathPrefix: "example/path"},
 			expectMatch: true,
 		},
 		{
 			name:    "Single PathPrefix filter mismatch",
 			match:   testMatches["high:cve1:fixed"],
-			filters: Filters{PathPrefix: "other/path"},
+			filters: filters.Filters{PathPrefix: "other/path"},
 		},
 		{
 			name:        "Dual FixState+Severity filter match",
 			match:       testMatches["high:cve1:fixed"],
-			filters:     Filters{FixState: "fixed", Severity: "High"},
+			filters:     filters.Filters{FixState: "fixed", Severity: "High"},
 			expectMatch: true,
 		},
 		{
 			name:    "Dual FixState+Severity filter mismatch",
 			match:   testMatches["high:cve1:fixed"],
-			filters: Filters{FixState: "fixed", Severity: "Low"},
+			filters: filters.Filters{FixState: "fixed", Severity: "Low"},
 		},
 		{
 			name:        "Triple PathPrefix+FixState+Severity filter match",
 			match:       testMatches["high:cve1:fixed"],
-			filters:     Filters{PathPrefix: "example/", FixState: "fixed", Severity: "High"},
+			filters:     filters.Filters{PathPrefix: "example/", FixState: "fixed", Severity: "High"},
 			expectMatch: true,
 		},
 		{
 			name:    "Triple PathPrefix+FixState+Severity filter mismatch",
 			match:   testMatches["high:cve1:fixed"],
-			filters: Filters{PathPrefix: "other/", FixState: "fixed", Severity: "Low"},
+			filters: filters.Filters{PathPrefix: "other/", FixState: "fixed", Severity: "Low"},
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			matched := tc.filters.MatchAllFor(tc.match)
+			matched := MatchAllFor(&tc.filters, tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -201,7 +201,7 @@ func TestMatchAllFor(t *testing.T) {
 func TestByCodeowners(t *testing.T) {
 	var tests = []struct {
 		name        string
-		filters     Filters
+		filters     filters.Filters
 		match       *Match
 		expectMatch bool
 	}{
@@ -212,19 +212,19 @@ func TestByCodeowners(t *testing.T) {
 		},
 		{
 			name:        "Matches single owners",
-			filters:     Filters{Codeowners: "@org-name/example-team"},
+			filters:     filters.Filters{Codeowners: "@org-name/example-team"},
 			match:       testMatches["critical:cve1"],
 			expectMatch: true,
 		},
 		{
 			name:        "Matches one of several owners",
-			filters:     Filters{Codeowners: "@org-name/example-team,@org-name/other-team"},
+			filters:     filters.Filters{Codeowners: "@org-name/example-team,@org-name/other-team"},
 			match:       testMatches["critical:cve1"],
 			expectMatch: true,
 		},
 		{
 			name:    "Missmatch non-owners team",
-			filters: Filters{Codeowners: "@org-name/other-team"},
+			filters: filters.Filters{Codeowners: "@org-name/other-team"},
 			match:   testMatches["critical:cve1"],
 		},
 	}
@@ -232,7 +232,7 @@ func TestByCodeowners(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			viper.Set("codeownersPath", "testdata/CODEOWNERS")
-			matched := tc.filters.byCodeowners(tc.match)
+			matched := byCodeowners(&tc.filters, tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -242,7 +242,7 @@ func TestByCodeowners(t *testing.T) {
 func TestBySeverity(t *testing.T) {
 	var tests = []struct {
 		name        string
-		filters     Filters
+		filters     filters.Filters
 		match       *Match
 		expectMatch bool
 	}{
@@ -253,37 +253,37 @@ func TestBySeverity(t *testing.T) {
 		},
 		{
 			name:        "Matches severity",
-			filters:     Filters{Severity: "Critical"},
+			filters:     filters.Filters{Severity: "Critical"},
 			match:       testMatches["critical:cve1"],
 			expectMatch: true,
 		},
 		{
 			name:        "Matches first of multiple severities",
-			filters:     Filters{Severity: "Critical,High"},
+			filters:     filters.Filters{Severity: "Critical,High"},
 			match:       testMatches["critical:cve1"],
 			expectMatch: true,
 		},
 		{
 			name:        "Matches second of multiple severities",
-			filters:     Filters{Severity: "Critical,High,Medium"},
+			filters:     filters.Filters{Severity: "Critical,High,Medium"},
 			match:       testMatches["high:cve1:fixed"],
 			expectMatch: true,
 		},
 		{
 			name:    "Missmatch severity differs",
-			filters: Filters{Severity: "High"},
+			filters: filters.Filters{Severity: "High"},
 			match:   testMatches["critical:cve1"],
 		},
 		{
 			name:    "Missmatch no common severity out of multiple",
-			filters: Filters{Severity: "Critical,High"},
+			filters: filters.Filters{Severity: "Critical,High"},
 			match:   testMatches["low:cve1:fixed"],
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			matched := tc.filters.bySeverity(tc.match)
+			matched := bySeverity(&tc.filters, tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -341,8 +341,8 @@ func TestByFixState(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			viper.Set("codeownersPath", "testdata/CODEOWNERS")
-			filters := Filters{FixState: tc.fixState}
-			matched := filters.byFixState(tc.match)
+			filtersValues := filters.Filters{FixState: tc.fixState}
+			matched := byFixState(&filtersValues, tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
 		})
@@ -352,7 +352,7 @@ func TestByFixState(t *testing.T) {
 func TestByPathPrefix(t *testing.T) {
 	var tests = []struct {
 		name        string
-		filters     Filters
+		filters     filters.Filters
 		match       *Match
 		expectMatch bool
 	}{
@@ -363,145 +363,50 @@ func TestByPathPrefix(t *testing.T) {
 		},
 		{
 			name:        "Matches with path prefix matches",
-			filters:     Filters{PathPrefix: "example/path3/"},
+			filters:     filters.Filters{PathPrefix: "example/path3/"},
 			match:       testMatches["critical:cve1"],
 			expectMatch: true,
 		},
 		{
 			name:        "Matches with path prefix matches broadly",
-			filters:     Filters{PathPrefix: "example/path"},
+			filters:     filters.Filters{PathPrefix: "example/path"},
 			match:       testMatches["critical:cve1"],
 			expectMatch: true,
 		},
 		{
 			name:        "Matches with non primary location",
-			filters:     Filters{PathPrefix: "other/path1/"},
+			filters:     filters.Filters{PathPrefix: "other/path1/"},
 			match:       testMatches["critical:cve2"],
 			expectMatch: true,
 		},
 		{
 			name:        "Matches any of multiple csv pathprefixes",
-			filters:     Filters{PathPrefix: "wrong/path1,other/path1/"},
+			filters:     filters.Filters{PathPrefix: "wrong/path1,other/path1/"},
 			match:       testMatches["critical:cve2"],
 			expectMatch: true,
 		},
 		{
 			name:    "Missmatch when single location different",
-			filters: Filters{PathPrefix: "example/path1/"},
+			filters: filters.Filters{PathPrefix: "example/path1/"},
 			match:   testMatches["critical:cve1"],
 		},
 		{
 			name:    "Missmatch when locations empty",
-			filters: Filters{PathPrefix: "example/path1/"},
+			filters: filters.Filters{PathPrefix: "example/path1/"},
 			match:   testMatches["low:cve2:nopath"],
 		},
 		{
 			name:    "Missmatch when no location matches",
-			filters: Filters{PathPrefix: "magical/path/"},
+			filters: filters.Filters{PathPrefix: "magical/path/"},
 			match:   testMatches["critical:cve2"],
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			matched := tc.filters.byPathPrefix(tc.match)
+			matched := byPathPrefix(&tc.filters, tc.match)
 
 			assert.Equal(t, tc.expectMatch, matched)
-		})
-	}
-}
-
-func TestFilterValidation(t *testing.T) {
-	var tests = []struct {
-		name           string
-		filters        Filters
-		expectedResult []error
-	}{
-		{
-			name:           "Valid severity",
-			filters:        Filters{Severity: "Negligible"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Invalid severity",
-			filters:        Filters{Severity: "Super"},
-			expectedResult: []error{errors.New("severity: invalid filter: Super is not in [Critical High Medium Low Negligible Unknown]")},
-		},
-		{
-			name:           "Invalid lowercase severity",
-			filters:        Filters{Severity: "critical"},
-			expectedResult: []error{errors.New("severity: invalid filter: critical is not in [Critical High Medium Low Negligible Unknown]")},
-		},
-		{
-			name:           "Invalid separator",
-			filters:        Filters{Severity: "Critical.High"},
-			expectedResult: []error{errors.New("severity: invalid filter: Critical.High is not in [Critical High Medium Low Negligible Unknown]")},
-		},
-		{
-			name:           "Valid separator",
-			filters:        Filters{Severity: "Medium,Low"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Valid fix state fixed",
-			filters:        Filters{FixState: "fixed"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Valid fix state not-fixed",
-			filters:        Filters{FixState: "not-fixed"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Invalid fix state notfixed",
-			filters:        Filters{FixState: "notfixed"},
-			expectedResult: []error{errors.New("fix-state: invalid filter: notfixed is not in [unknown not-fixed fixed]")},
-		},
-		{
-			name:           "Valid combination fix state unknown,fixed",
-			filters:        Filters{FixState: "unknown,fixed"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Valid all fixed states",
-			filters:        Filters{FixState: "not-fixed,unknown,fixed"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Valid combinations fix state and severity",
-			filters:        Filters{FixState: "not-fixed", Severity: "Critical,High,Medium"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Valid codeowners",
-			filters:        Filters{Codeowners: "@org-name/example-team"},
-			expectedResult: nil,
-		},
-		{
-			name:           "Invalid codeowners",
-			filters:        Filters{Codeowners: "@org-name/true-heroes"},
-			expectedResult: []error{errors.New("codeowners: invalid filter: @org-name/true-heroes is not in [@org-name/example-team ]")},
-		},
-		{
-			name:           "Valid combinations fix state, severity and codeowners",
-			filters:        Filters{FixState: "unknown", Severity: "Low,Unknown", Codeowners: "@org-name/example-team"},
-			expectedResult: nil,
-		},
-		{
-			name:    "Multiple errors to report",
-			filters: Filters{FixState: "maybe", Severity: "Uncommon", Codeowners: "@org-name/example-tam"},
-			expectedResult: []error{
-				errors.New("fix-state: invalid filter: maybe is not in [unknown not-fixed fixed]"),
-				errors.New("severity: invalid filter: Uncommon is not in [Critical High Medium Low Negligible Unknown]"),
-				errors.New("codeowners: invalid filter: @org-name/example-tam is not in [@org-name/example-team ]"),
-			},
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			result := tc.filters.Validate()
-			assert.Equal(t, tc.expectedResult, result)
 		})
 	}
 }

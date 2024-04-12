@@ -1,3 +1,4 @@
+//nolint:dupl // implements same interface, but is different
 package parse
 
 import (
@@ -33,11 +34,12 @@ func GrypeReport(rawJSON []byte) (*grype.Document, error) {
 
 // WriteGrypeFile takes a grype document and a path and writes the document on disk in json format
 func WriteGrypeFile(document *grype.Document, path string) error {
+	const permissions os.FileMode = 0600
 	rawJSON, err := json.Marshal(document)
 	if err != nil {
 		return fmt.Errorf("grumble cannot read Grype document: %w", err)
 	}
-	err = os.WriteFile(path, rawJSON, 0600)
+	err = os.WriteFile(path, rawJSON, permissions)
 	if err != nil {
 		return fmt.Errorf("grumble cannot write Grype document: %w", err)
 	}

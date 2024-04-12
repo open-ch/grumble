@@ -1,5 +1,7 @@
 package cmd
 
+//revive:disable:unused-parameter cmd parameters are used in the cobra command
+
 import (
 	"fmt"
 	"github.com/open-ch/grumble/parse"

@@ -55,7 +55,7 @@ type PackageCustomData struct {
 }
 
 func sourcedCPESfromSimpleCPEs(simpleCPEs []string) []CPE {
-	var result []CPE
+	var result = make([]CPE, 0, len(simpleCPEs))
 	for _, s := range simpleCPEs {
 		result = append(result, CPE{
 			Value: s,

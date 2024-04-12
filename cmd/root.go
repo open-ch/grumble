@@ -1,6 +1,9 @@
 package cmd
 
+//revive:disable:unused-parameter cmd parameters are used in the cobra command
+
 import (
+	"errors"
 	"os"
 	"os/exec"
 	"path"
@@ -31,6 +34,8 @@ import (
 //	"git-main-branch": "git.main.branch",
 //
 // See syncViperToCommandFlags for implementation details
+//
+//nolint:gochecknoglobals // not worth refactoring at the moment
 var configMap = map[string]string{
 	// example mapping: "git-main-branch": "git.main.branch",
 }
@@ -38,15 +43,16 @@ var configMap = map[string]string{
 // GetRootCommand returns the root command used to
 // run the grumble cli.
 func GetRootCommand() *cobra.Command {
+	const padding = 4
 	highlight := lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"}
 	special := lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"}
 	moduleBox := lipgloss.NewStyle().
 		Foreground(special).
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(highlight).
-		PaddingLeft(4).
-		PaddingRight(4)
-
+		PaddingLeft(padding).
+		PaddingRight(padding)
+	//nolint:dupword // it's a logo
 	logo := moduleBox.Render(`
   ________                   ___.   .__
  /  _____/______ __ __  _____\_ |__ |  |   ____
@@ -113,8 +119,9 @@ func initializeConfig(cmd *cobra.Command) error {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			log.Warnf("Failed to parse config %v\n", err)
+		var e viper.ConfigFileNotFoundError
+		if errors.As(err, &e) {
+			log.Warnf("Failed to parse config %v\n", e)
 		}
 	}
 
@@ -177,7 +184,10 @@ func syncViperToCommandFlags(cmd *cobra.Command) {
 	flags.VisitAll(func(f *pflag.Flag) {
 		if entry, ok := configMap[f.Name]; ok && !f.Changed && viper.IsSet(entry) {
 			val := viper.GetString(entry)
-			_ = cmd.Flags().Set(f.Name, val)
+			setFlagResult := cmd.Flags().Set(f.Name, val)
+			if setFlagResult != nil {
+				log.Errorf("could not set flag %s with value %s: %v", f.Name, val, setFlagResult)
+			}
 		}
 	})
 }

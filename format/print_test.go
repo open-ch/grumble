@@ -2,14 +2,13 @@ package format
 
 import (
 	"os"
+	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/parse"
 	"strings"
 	"testing"
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/open-ch/grumble/grype"
-	"github.com/open-ch/grumble/parse"
 )
 
 func TestPrint(t *testing.T) {
@@ -89,7 +88,7 @@ func TestPrint(t *testing.T) {
 			viper.Set("prometheusMetricName", "test_vulnerability")
 			var outputStrBuilder strings.Builder
 			fmtr := NewFormatter(tc.format, &outputStrBuilder)
-			err := fmtr.Print(tc.document)
+			err := Print(fmtr, tc.document)
 
 			if tc.expectedError {
 				assert.Error(t, err)

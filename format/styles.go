@@ -8,6 +8,7 @@ import (
 
 const defaultWidth = 120
 
+//nolint:gochecknoglobals // not worth refactoring at the moment
 var styles *stylesSet
 
 type stylesSet struct {
@@ -48,6 +49,9 @@ func initStyles() {
 
 // makeStyles creates a new styleset with the current theme
 func makeStyles() *stylesSet {
+	const headerWidth = 9
+	const padding = 4
+
 	width := getTerminalSessionWidth()
 	leftIndent := 2
 	headerRightPadding := 1
@@ -56,11 +60,11 @@ func makeStyles() *stylesSet {
 	faint := lipgloss.NewStyle().Faint(true)
 	constrast := lipgloss.NewStyle().Foreground(colors.contrast).Background(colors.backgroundContrast)
 	header := bold.Copy().PaddingRight(headerRightPadding)
-	severity := header.Copy().Width(9) // Critical is the longest one, fix the length
+
+	severity := header.Copy().Width(headerWidth) // Critical is the longest one, fix the length
 	fix := header.Copy().PaddingLeft(leftIndent).Foreground(colors.neutral)
 	logo := bold.Copy().Foreground(colors.special).Background(colors.highlight).
 		PaddingLeft(1).PaddingRight(1).SetString("Grumble").String()
-
 	return &stylesSet{
 		bold:             bold,
 		codeowners:       header,
@@ -81,8 +85,8 @@ func makeStyles() *stylesSet {
 			Foreground(colors.special).
 			BorderStyle(lipgloss.RoundedBorder()).
 			BorderForeground(colors.highlight).
-			PaddingLeft(4).
-			PaddingRight(4),
+			PaddingLeft(padding).
+			PaddingRight(padding),
 		summaryBox: constrast.MaxHeight(1).Width(width),
 		matchBox: lipgloss.NewStyle().
 			Foreground(lipgloss.Color("15")).

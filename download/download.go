@@ -1,6 +1,7 @@
 package download
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -28,7 +29,8 @@ type auth struct {
 func FileFromURL(url string) ([]byte, error) {
 	client := http.Client{Timeout: HTTPTimeoutS}
 
-	req, err := http.NewRequest(http.MethodGet, url, http.NoBody)
+	ctx := context.Background()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +52,7 @@ func FileFromURL(url string) ([]byte, error) {
 		return nil, err
 	}
 
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		return resBody, fmt.Errorf("unexpected response code %d", res.StatusCode)
 	}
 

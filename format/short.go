@@ -1,24 +1,28 @@
 package format
 
 import (
+	"errors"
+	"github.com/open-ch/grumble/grype"
+
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
-
-	"github.com/open-ch/grumble/grype"
 )
 
-func renderShort(document *grype.Document) (string, error) {
-	if len(document.Matches) == 0 {
-		return "No matches in document", nil
-	}
+func renderShort[T PrintDocument](document T) (string, error) {
+	if document, ok := any(document).(*grype.Document); ok {
+		if len(document.Matches) == 0 {
+			return "No matches in document", nil
+		}
 
-	var matches []string
-	for _, m := range document.Matches {
-		render := RenderMatchShort(m)
-		matches = append(matches, render)
-	}
+		var matches []string
+		for _, m := range document.Matches {
+			render := RenderMatchShort(m)
+			matches = append(matches, render)
+		}
 
-	return styles.reportBox.Render(lipgloss.JoinVertical(lipgloss.Left, matches...)), nil
+		return styles.reportBox.Render(lipgloss.JoinVertical(lipgloss.Left, matches...)), nil
+	}
+	return "", errors.New("unknown document type")
 }
 
 // RenderMatchShort Renders a match as a single line of colored text

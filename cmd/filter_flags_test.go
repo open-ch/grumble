@@ -1,14 +1,15 @@
 package cmd
 
+//revive:disable:unused-parameter
+
 import (
+	"errors"
+	"github.com/open-ch/grumble/filters"
 	"testing"
 
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
-
 	"github.com/spf13/viper"
-
-	"github.com/open-ch/grumble/grype"
+	"github.com/stretchr/testify/assert"
 )
 
 type testSetCase struct {
@@ -31,27 +32,27 @@ type testGetCase struct {
 func TestSetFilterValuesForCommand(t *testing.T) {
 	var tests = []testSetCase{
 		{
-			flag:       grype.Codeowners,
+			flag:       filters.Codeowners,
 			cmdLineArg: "@Open-Systems-SASE/topic-bazel",
 		},
 		{
-			flag: grype.Codeowners,
+			flag: filters.Codeowners,
 		},
 		{
-			flag:       grype.Codeowners,
+			flag:       filters.Codeowners,
 			cmdLineArg: "@Open-Systems-SASE/topic-bazel",
 			loadConfig: true,
 		},
 		{
-			flag:       grype.Severity,
+			flag:       filters.Severity,
 			loadConfig: true,
 		},
 		{
-			flag:       grype.PathPrefix,
+			flag:       filters.PathPrefix,
 			loadConfig: true,
 		},
 		{
-			flag:       grype.FixState,
+			flag:       filters.FixState,
 			cmdLineArg: "fixed",
 			loadConfig: true,
 		},
@@ -64,13 +65,14 @@ func TestSetFilterValuesForCommand(t *testing.T) {
 				viper.SetConfigType("yaml")
 				err := viper.ReadInConfig()
 				if err != nil {
-					if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-						assert.Fail(t, "Failed to parse config %v", err)
+					var e viper.ConfigFileNotFoundError
+					if errors.As(err, &e) {
+						assert.Fail(t, "Failed to parse config %v", e)
 					}
 				}
 			}
 			cmd := createTestCommand()
-			filters := &grype.Filters{}
+			filtersValues := &filters.Filters{}
 
 			if tc.cmdLineArg != "" {
 				err := cmd.Flags().Set(tc.flag, tc.cmdLineArg)
@@ -81,8 +83,8 @@ func TestSetFilterValuesForCommand(t *testing.T) {
 				}
 			}
 
-			setFilterValue(tc.flag, filters)
-			assertForFlag(t, tc, filters)
+			setFilterValue(tc.flag, filtersValues)
+			assertForFlag(t, tc, filtersValues)
 		})
 	}
 }
@@ -113,31 +115,32 @@ func TestGetFilterValuesForCommand(t *testing.T) {
 			viper.SetConfigType("yaml")
 			err = viper.ReadInConfig()
 			if err != nil {
-				if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-					assert.Fail(t, "Failed to parse config: %v", err)
+				var e viper.ConfigFileNotFoundError
+				if errors.As(err, &e) {
+					assert.Fail(t, "Failed to parse config %v", e)
 				}
 			}
 			cmd := createTestCommand()
-			expected := grype.Filters{Severity: tc.severity, Codeowners: tc.codeOwners, PathPrefix: tc.pathPrefix, FixState: tc.fixState}
+			expected := filters.Filters{Severity: tc.severity, Codeowners: tc.codeOwners, PathPrefix: tc.pathPrefix, FixState: tc.fixState}
 
 			if tc.codeOwnersFlag != "" {
-				err = cmd.Flags().Set(grype.Codeowners, tc.codeOwnersFlag)
+				err = cmd.Flags().Set(filters.Codeowners, tc.codeOwnersFlag)
 			}
 			if tc.severityFlag != "" {
-				err = cmd.Flags().Set(grype.Severity, tc.severityFlag)
+				err = cmd.Flags().Set(filters.Severity, tc.severityFlag)
 			}
 			if tc.pathPrefixFlag != "" {
-				err = cmd.Flags().Set(grype.PathPrefix, tc.pathPrefixFlag)
+				err = cmd.Flags().Set(filters.PathPrefix, tc.pathPrefixFlag)
 			}
 			if tc.fixStateFlag != "" {
-				err = cmd.Flags().Set(grype.FixState, tc.fixStateFlag)
+				err = cmd.Flags().Set(filters.FixState, tc.fixStateFlag)
 			}
 			if err != nil {
 				assert.NoError(t, err)
 			}
 
-			filters := getFilterValues()
-			assert.Equal(t, &expected, filters)
+			filtersValues := getFilterValues()
+			assert.Equal(t, &expected, filtersValues)
 		})
 	}
 }
@@ -154,18 +157,18 @@ func createTestCommand() *cobra.Command {
 	return cmd
 }
 
-func assertForFlag(t *testing.T, tc testSetCase, filters *grype.Filters) {
+func assertForFlag(t *testing.T, tc testSetCase, filtersValues *filters.Filters) {
 	t.Helper()
 	expected := viper.GetString(tc.flag)
 	switch tc.flag {
-	case grype.Codeowners:
-		assert.Equal(t, filters.Codeowners, expected)
-	case grype.Severity:
-		assert.Equal(t, filters.Severity, expected)
-	case grype.PathPrefix:
-		assert.Equal(t, filters.PathPrefix, expected)
-	case grype.FixState:
-		assert.Equal(t, filters.FixState, expected)
+	case filters.Codeowners:
+		assert.Equal(t, filtersValues.Codeowners, expected)
+	case filters.Severity:
+		assert.Equal(t, filtersValues.Severity, expected)
+	case filters.PathPrefix:
+		assert.Equal(t, filtersValues.PathPrefix, expected)
+	case filters.FixState:
+		assert.Equal(t, filtersValues.FixState, expected)
 	default:
 		assert.Fail(t, "unknown flag")
 	}

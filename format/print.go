@@ -3,8 +3,8 @@ package format
 import (
 	"fmt"
 	"io"
-
 	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/syft"
 )
 
 // Formatter can be used to format grype reports for output
@@ -12,6 +12,11 @@ import (
 type Formatter struct {
 	format string
 	writer io.Writer
+}
+
+// PrintDocument is a union type for grype and syft documents
+type PrintDocument interface {
+	*grype.Document | *syft.Document
 }
 
 // NewFormatter configures a new formatter for handling grype documents
@@ -24,27 +29,27 @@ func NewFormatter(format string, writer io.Writer) *Formatter {
 }
 
 // Print renders the given document using the configured formatter
-func (f *Formatter) Print(document *grype.Document) error {
-	var renderFunction func(document *grype.Document) (string, error)
-	switch f.format {
+func Print[T PrintDocument](formatter *Formatter, document T) error {
+	var output string
+	var err error
+	switch formatter.format {
 	case "json": //nolint:goconst
-		renderFunction = renderJSON
+		output, err = renderJSON(document)
 	case "pretty":
-		renderFunction = renderPretty
+		output, err = renderPretty(document)
 	case "prometheus": //nolint:goconst
-		renderFunction = renderPrometheus
+		output, err = renderPrometheus(document)
 	case "short":
-		renderFunction = renderShort
+		output, err = renderShort(document)
 	default:
-		return fmt.Errorf("invalid formatter print format configured: %s", f.format)
+		return fmt.Errorf("invalid formatter print format configured: %s", formatter.format)
 	}
 
-	output, err := renderFunction(document)
 	if err != nil {
 		return err
 	}
 
-	_, err = fmt.Fprintf(f.writer, "%s\n", output)
+	_, err = fmt.Fprintf(formatter.writer, "%s\n", output)
 	if err != nil {
 		return err
 	}

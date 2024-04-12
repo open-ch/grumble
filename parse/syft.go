@@ -1,3 +1,4 @@
+//nolint:dupl // implements same interface, but is different
 package parse
 
 import (
@@ -33,11 +34,12 @@ func SyftSBOM(rawJSON []byte) (*syft.Document, error) {
 
 // WriteSyftFile takes a syft document and a path and writes the document on disk in json format
 func WriteSyftFile(document *syft.Document, path string) error {
+	const permissions os.FileMode = 0600
 	rawJSON, err := json.Marshal(document)
 	if err != nil {
 		return fmt.Errorf("grumble cannot read Syft document: %w", err)
 	}
-	err = os.WriteFile(path, rawJSON, 0600)
+	err = os.WriteFile(path, rawJSON, permissions)
 	if err != nil {
 		return fmt.Errorf("grumble cannot write Syft document: %w", err)
 	}

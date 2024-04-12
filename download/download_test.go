@@ -1,7 +1,6 @@
 package download
 
 import (
-	"os"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -40,8 +39,8 @@ func TestFileFromURL(t *testing.T) {
 				httpmock.NewStringResponder(200, simpleGrype))
 			viper.Set("usernameEnvVar", "GRUMBLE_USERNAME")
 			viper.Set("passwordEnvVar", "GRUMBLE_PASSWORD")
-			os.Setenv("GRUMBLE_USERNAME", "grumble")
-			os.Setenv("GRUMBLE_PASSWORD", "elbmurg")
+			t.Setenv("GRUMBLE_USERNAME", "grumble")
+			t.Setenv("GRUMBLE_PASSWORD", "elbmurg")
 
 			outputJSON, err := FileFromURL(tc.requestURL)
 
@@ -97,7 +96,7 @@ func TestGetAuthCredentials(t *testing.T) {
 			viper.Set("usernameEnvVar", "GRUMBLE_USERNAME")
 			viper.Set("passwordEnvVar", "GRUMBLE_PASSWORD")
 			for k, v := range tc.mockEnv {
-				os.Setenv(k, v)
+				t.Setenv(k, v)
 			}
 
 			auth := getAuthCredentials()

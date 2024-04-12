@@ -1,5 +1,7 @@
 package grype
 
+// golangci-lint: gomnd
+
 import (
 	"sort"
 )
@@ -46,18 +48,28 @@ func compareMatches(i, j *Match) bool {
 	return i.Artifact.Purl > j.Artifact.Purl
 }
 
+// None Negligible Low Medium High Critical are the possible severity values for vulnerabilities
+const (
+	None = iota
+	Negligible
+	Low
+	Medium
+	High
+	Critical
+)
+
 func getNumericalSeverity(severity string) int {
 	switch severity {
 	case "Critical":
-		return 5
+		return Critical
 	case "High":
-		return 4
+		return High
 	case "Medium":
-		return 3
+		return Medium
 	case "Low":
-		return 2
+		return Low
 	case "Negligible":
-		return 1
+		return Negligible
 	}
-	return 0
+	return None
 }
