@@ -16,7 +16,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-//nolint:cyclop
+//nolint:gocyclo,gocognit,cyclop
+//revive:disable:cyclomatic
 func getFetchCommand() *cobra.Command {
 	output := ""
 	syftType := false
@@ -43,11 +44,19 @@ Defaults to grype files
 				os.Exit(1)
 			}
 			outputFormat := viper.GetString("format")
-			url := viper.GetString("fetchUrl")
-			if url == "" {
-				log.Fatalf("required flag \"url\" (or config value fetchUrl) not set")
-			}
 
+			var url string
+			if syftType {
+				url = viper.GetString("syftFetchUrl")
+				if url == "" {
+					log.Fatalf("required flag \"url\" (or config value syftFetchUrl) not set")
+				}
+			} else {
+				url = viper.GetString("grypeFetchUrl")
+				if url == "" {
+					log.Fatalf("required flag \"url\" (or config value grypeFetchUrl) not set")
+				}
+			}
 			report, err := download.FileFromURL(url)
 			if err != nil {
 				log.Fatalf("grumble could not fetch %s: %s\n", url, err)
@@ -97,9 +106,13 @@ Defaults to grype files
 	cmd.Flags().StringVarP(&output, "output", "o", "", "Optional path to save the raw fetched report at (before any filters or formats are applied)")
 	cmd.Flags().StringP("url", "u", "", "Url of the report to fetch")
 	cmd.Flags().BoolVar(&syftType, "syft", false, "Parse a syft file instead of a grype file")
-	err := viper.BindPFlag("fetchUrl", cmd.Flags().Lookup("url"))
+	err := viper.BindPFlag("grypeFetchUrl", cmd.Flags().Lookup("url"))
 	if err != nil {
-		log.Errorf("could not BindFlag 'fetchUrl': %v", err)
+		log.Errorf("could not BindFlag 'grypeFetchUrl': %v", err)
+	}
+	err = viper.BindPFlag("syftFetchUrl", cmd.Flags().Lookup("url"))
+	if err != nil {
+		log.Errorf("could not BindFlag 'syftFetchUrl': %v", err)
 	}
 	addAndBindFilterFlags(cmd)
 

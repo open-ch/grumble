@@ -16,8 +16,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+//nolint:cyclop
 func getExploreCommand() *cobra.Command {
 	path := ""
+	syftType := false
 
 	exploreCmd := &cobra.Command{
 		Use:     "explore",
@@ -29,6 +31,7 @@ Explore works in parse and fetch mode:
 - Default: fetch from url in config
 - --url: fetch from specified url
 - --input: parse local file
+- --syft: the input file is a syft file
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var grypeReport *grype.Document
@@ -50,9 +53,17 @@ Explore works in parse and fetch mode:
 					return err
 				}
 			} else {
-				url := viper.GetString("fetchUrl")
-				if url == "" {
-					return fmt.Errorf("required flag \"url\" (or config value fetchUrl) not set")
+				var url string
+				if syftType {
+					url = viper.GetString("syftFetchUrl")
+					if url == "" {
+						log.Fatalf("required flag \"url\" (or config value syftFetchUrl) not set")
+					}
+				} else {
+					url = viper.GetString("grypeFetchUrl")
+					if url == "" {
+						log.Fatalf("required flag \"url\" (or config value grypeFetchUrl) not set")
+					}
 				}
 
 				rawReport, err2 := download.FileFromURL(url)
@@ -84,10 +95,15 @@ Explore works in parse and fetch mode:
 		log.Errorf("could not MarkFlagFilename 'input': %v", err)
 	}
 
+	flags.BoolVar(&syftType, "syft", false, "Parse a syft file instead of a grype file")
 	flags.StringP("url", "u", "", "Url of grype report to fetch")
-	err = viper.BindPFlag("fetchUrl", flags.Lookup("url"))
+	err = viper.BindPFlag("grypeFetchUrl", flags.Lookup("url"))
 	if err != nil {
-		log.Errorf("could not BindFlag 'fetchUrl': %v", err)
+		log.Errorf("could not BindFlag 'grypeFetchUrl': %v", err)
+	}
+	err = viper.BindPFlag("syftFetchUrl", flags.Lookup("url"))
+	if err != nil {
+		log.Errorf("could not BindFlag 'syftFetchUrl': %v", err)
 	}
 
 	addAndBindFilterFlags(exploreCmd)
