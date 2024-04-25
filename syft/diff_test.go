@@ -125,7 +125,7 @@ func TestDiff(t *testing.T) {
 			name:            "Avoids duplicate files for added packages",
 			before:          &Document{},
 			after:           &Document{Artifacts: []Package{testPackage, testPackage2}, ArtifactRelationships: []Relationship{testRelationshipWithFile, testRelationshipWithFile2}, Files: []File{testFile}},
-			expectedAdded:   &Document{Files: []File{testFile}, Artifacts: []Package{testPackage2, testPackage}, ArtifactRelationships: []Relationship{testRelationshipWithFile2, testRelationshipWithFile}},
+			expectedAdded:   &Document{Files: []File{testFile}, Artifacts: []Package{testPackage2, testPackage}, ArtifactRelationships: []Relationship{testRelationshipWithFile, testRelationshipWithFile2}},
 			expectedRemoved: &Document{Files: []File{}, Artifacts: []Package{}, ArtifactRelationships: []Relationship{}},
 		},
 		{

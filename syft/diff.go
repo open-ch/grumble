@@ -1,5 +1,7 @@
 package syft
 
+import "sort"
+
 func prepareDiff(d *Document) *Document {
 	return &Document{
 		Descriptor:            d.Descriptor,
@@ -140,5 +142,8 @@ func mapToSliceRelationship(m map[string]*Relationship) []Relationship {
 	for _, v := range m {
 		s = append(s, *v)
 	}
+	sort.SliceStable(s, func(i, j int) bool {
+		return s[i].UniqueID() < s[j].UniqueID()
+	})
 	return s
 }
