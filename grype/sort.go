@@ -1,6 +1,6 @@
 package grype
 
-// golangci-lint: gomnd
+// golangci-lint: mnd
 
 import (
 	"sort"

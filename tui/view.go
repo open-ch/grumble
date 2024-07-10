@@ -4,7 +4,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-//nolint:gochecknoglobals,gomnd // not worth refactoring at the moment
+//nolint:gochecknoglobals,mnd // not worth refactoring at the moment
 var docStyle = lipgloss.NewStyle().Margin(1, 2)
 
 func (m matchBrowserModel) View() string { //nolint:gocritic
