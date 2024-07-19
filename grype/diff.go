@@ -30,6 +30,14 @@ func Diff(before, after *Document) *DocumentDiff {
 		uid := m.UniqueID()
 		_, existsBefore := lookupB[uid]
 		if !existsBefore {
+			// Check if matches with the same vulnerability ID exist in the before document and compare the locations
+			// If the locations are the same, the match is not considered as "new" but it is just an update
+			matchesBefore := sortedB.SearchMatchesByVulnerabilityID(m.Vulnerability.ID)
+			for _, matchBefore := range matchesBefore {
+				if m.LocationsEqual(&matchBefore.Artifact) {
+					m.IsUpdated = true
+				}
+			}
 			diff.Added = append(diff.Added, enrichWithCodeowners(m))
 		}
 	}

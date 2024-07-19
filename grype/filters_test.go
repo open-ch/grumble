@@ -20,6 +20,18 @@ var testMatches = map[string]*Match{
 			Purl:      "pkg:golang/example.com/example@v1.0.0",
 		},
 	},
+	"low:cve1:updated": {
+		Vulnerability: Vulnerability{
+			ID:       "low:cve1",
+			Severity: "Low",
+			Fix:      Fix{State: "fixed"},
+		},
+		Artifact: Artifact{
+			Locations: []Location{{Path: "example/path1/relevantFile"}},
+			Purl:      "pkg:golang/example.com/example@v1.0.1",
+		},
+		IsUpdated: true,
+	},
 	"low:cve2:nopath": {
 		Vulnerability: Vulnerability{
 			ID:       "low:cve2",

@@ -91,3 +91,33 @@ func TestDiff(t *testing.T) {
 		})
 	}
 }
+
+func TestDiffForUpdatedEntry(t *testing.T) {
+	var tests = []struct {
+		name         string
+		before       *Document
+		after        *Document
+		expectedDiff *DocumentDiff
+	}{
+		{
+			name:   "Detect match in after only as added",
+			before: &Document{Matches: []*Match{testMatches["low:cve1:fixed"]}},
+			after:  &Document{Matches: []*Match{testMatches["low:cve1:updated"]}},
+			expectedDiff: &DocumentDiff{
+				Added: []*Match{
+					testMatches["low:cve1:updated"],
+				},
+				Removed: []*Match{
+					testMatches["low:cve1:fixed"],
+				},
+			},
+		}}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			viper.Set("codeownersPath", "testdata/CODEOWNERS")
+			diff := Diff(tc.before, tc.after)
+
+			assert.Equal(t, tc.expectedDiff, diff)
+		})
+	}
+}

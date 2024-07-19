@@ -27,6 +27,17 @@ func (d *Document) Sort() *Document {
 	return sd
 }
 
+// SearchMatchesByVulnerabilityID returns all the matches in a document that are matching a specific vulnerability ID
+func (d *Document) SearchMatchesByVulnerabilityID(vulnerabilityID string) []*Match {
+	var matches []*Match
+	for _, m := range d.Matches {
+		if m.Vulnerability.ID == vulnerabilityID {
+			matches = append(matches, m)
+		}
+	}
+	return matches
+}
+
 // compareMatches is a sort helper it compares 2 values
 // and retursn true if j is smaller than i.
 // The goal is to sort over multiple keys:

@@ -13,6 +13,7 @@ type Match struct {
 	RelatedVulnerabilities []RelatedVulnerability `json:"relatedVulnerabilities"`
 	Vulnerability          Vulnerability          `json:"vulnerability"`
 	AppliedIgnoreRules     []IgnoreRule           `json:"appliedIgnoreRules,omitempty"`
+	IsUpdated              bool                   `json:"isUpdated,omitempty"`
 }
 
 // UniqueID returns a string that uniquely identifies a match
@@ -27,6 +28,21 @@ func (m *Match) UniqueID() string {
 	}
 	locationDigest := sha256.Sum256([]byte(builder.String()))
 	return fmt.Sprintf("%s:%s:%x", m.Vulnerability.ID, m.Artifact.Purl, locationDigest)
+}
+
+// LocationsEqual returns true if the artifact is in the same location as the other artifact
+func (m *Match) LocationsEqual(other *Artifact) bool {
+	if len(m.Artifact.Locations) != len(other.Locations) {
+		return false
+	}
+
+	for i, location := range m.Artifact.Locations {
+		if location.Path != other.Locations[i].Path {
+			return false
+		}
+	}
+
+	return true
 }
 
 // Artifact info about a match
