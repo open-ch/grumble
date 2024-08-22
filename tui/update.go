@@ -20,9 +20,6 @@ func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) { //nolint:g
 	case tea.KeyMsg:
 		keyPress := msg.String()
 		switch keyPress {
-		case "ctrl+c", "q":
-			return m, tea.Quit
-
 		case "o":
 			if m.list.SelectedItem() != nil && m.list.FilterState() != list.Filtering {
 				selectedItem, ok := m.list.SelectedItem().(matchListItem)

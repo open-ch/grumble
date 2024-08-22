@@ -43,11 +43,10 @@ func buildDocumentBrowserModel(d *grype.Document) matchBrowserModel {
 		list:    list.New(items, renderDelegate, 0, 0),
 		details: viewport.New(0, 0),
 	}
-	m.list.DisableQuitKeybindings()
+
 	m.list.Title = "Grumble"
 	m.list.AdditionalShortHelpKeys = func() []key.Binding {
 		return []key.Binding{
-			key.NewBinding(key.WithKeys("q"), key.WithHelp("q", "quit")),
 			key.NewBinding(key.WithKeys("o"), key.WithHelp("o", "open url")),
 			key.NewBinding(key.WithKeys("⏎"), key.WithHelp("⏎", "show details")),
 			key.NewBinding(key.WithKeys("␛"), key.WithHelp("␛", "hide details")),
