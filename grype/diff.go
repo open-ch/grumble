@@ -38,7 +38,7 @@ func Diff(before, after *Document) *DocumentDiff {
 					m.IsUpdated = true
 				}
 			}
-			diff.Added = append(diff.Added, enrichWithCodeowners(m))
+			diff.Added = append(diff.Added, EnrichWithCodeowners(m))
 		}
 	}
 
@@ -46,7 +46,7 @@ func Diff(before, after *Document) *DocumentDiff {
 		uid := m.UniqueID()
 		_, existsAfter := lookupA[uid]
 		if !existsAfter {
-			diff.Removed = append(diff.Removed, enrichWithCodeowners(m))
+			diff.Removed = append(diff.Removed, EnrichWithCodeowners(m))
 		}
 	}
 
@@ -61,7 +61,8 @@ func buildUniqueMatchKeyLookup(d *Document) map[string]*Match {
 	return lookup
 }
 
-func enrichWithCodeowners(match *Match) *Match {
+// EnrichWithCodeowners adds relevant codeowners information to a grype match
+func EnrichWithCodeowners(match *Match) *Match {
 	for i, location := range match.Artifact.Locations {
 		codeowners, err := ownership.LookupFor(location.Path)
 		if err != nil {
