@@ -3,6 +3,7 @@ package format
 import (
 	"fmt"
 	"io"
+
 	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/syft"
 )

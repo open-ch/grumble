@@ -2,10 +2,11 @@ package format
 
 import (
 	"os"
-	"github.com/open-ch/grumble/grype"
-	"github.com/open-ch/grumble/parse"
 	"strings"
 	"testing"
+
+	"github.com/open-ch/grumble/grype"
+	"github.com/open-ch/grumble/parse"
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"

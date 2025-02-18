@@ -5,6 +5,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+
 	"github.com/open-ch/grumble/filters"
 	"github.com/open-ch/grumble/format"
 	"github.com/open-ch/grumble/grype"

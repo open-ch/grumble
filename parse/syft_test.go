@@ -2,9 +2,10 @@ package parse
 
 import (
 	"encoding/json"
-	"github.com/open-ch/grumble/syft"
 	"strings"
 	"testing"
+
+	"github.com/open-ch/grumble/syft"
 
 	"github.com/stretchr/testify/assert"
 )

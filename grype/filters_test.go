@@ -1,8 +1,9 @@
 package grype
 
 import (
-	"github.com/open-ch/grumble/filters"
 	"testing"
+
+	"github.com/open-ch/grumble/filters"
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"

@@ -2,6 +2,7 @@ package format
 
 import (
 	"fmt"
+
 	"github.com/open-ch/grumble/grype"
 
 	"github.com/charmbracelet/lipgloss"

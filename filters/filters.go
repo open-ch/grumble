@@ -3,9 +3,10 @@ package filters
 import (
 	"errors"
 	"fmt"
-	"github.com/open-ch/grumble/ownership"
 	"slices"
 	"strings"
+
+	"github.com/open-ch/grumble/ownership"
 )
 
 // Filters holds all the filters to apply in a Filter() call

@@ -2,6 +2,7 @@ package format
 
 import (
 	"encoding/json"
+
 	"github.com/open-ch/grumble/grype"
 )
 

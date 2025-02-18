@@ -59,26 +59,26 @@ func makeStyles() *stylesSet {
 	bold := lipgloss.NewStyle().Bold(true)
 	faint := lipgloss.NewStyle().Faint(true)
 	constrast := lipgloss.NewStyle().Foreground(colors.contrast).Background(colors.backgroundContrast)
-	header := bold.Copy().PaddingRight(headerRightPadding)
+	header := bold.PaddingRight(headerRightPadding)
 
-	severity := header.Copy().Width(headerWidth) // Critical is the longest one, fix the length
-	fix := header.Copy().PaddingLeft(leftIndent).Foreground(colors.neutral)
-	logo := bold.Copy().Foreground(colors.special).Background(colors.highlight).
+	severity := header.Width(headerWidth) // Critical is the longest one, fix the length
+	fix := header.PaddingLeft(leftIndent).Foreground(colors.neutral)
+	logo := bold.Foreground(colors.special).Background(colors.highlight).
 		PaddingLeft(1).PaddingRight(1).SetString("Grumble").String()
 	return &stylesSet{
 		bold:             bold,
 		codeowners:       header,
 		constrast:        constrast,
-		cve:              constrast.Copy().PaddingLeft(1).PaddingRight(1),
+		cve:              constrast.PaddingLeft(1).PaddingRight(1),
 		faint:            faint,
-		paragraph:        faint.Copy().PaddingLeft(leftIndent).Width(width),
-		stateFixed:       fix.Copy().Foreground(colors.good),
+		paragraph:        faint.PaddingLeft(leftIndent).Width(width),
+		stateFixed:       fix.Foreground(colors.good),
 		stateNotFixed:    fix,
 		stateOther:       fix,
-		severityCritical: severity.Copy().Foreground(colors.critical),
-		severityHigh:     severity.Copy().Foreground(colors.high),
-		severityMedium:   severity.Copy().Foreground(colors.medium),
-		severityLow:      severity.Copy().Foreground(colors.low),
+		severityCritical: severity.Foreground(colors.critical),
+		severityHigh:     severity.Foreground(colors.high),
+		severityMedium:   severity.Foreground(colors.medium),
+		severityLow:      severity.Foreground(colors.low),
 		severityOther:    severity,
 
 		emptyBox: lipgloss.NewStyle().

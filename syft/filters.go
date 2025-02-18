@@ -1,9 +1,10 @@
 package syft
 
 import (
+	"strings"
+
 	"github.com/open-ch/grumble/filters"
 	"github.com/open-ch/grumble/ownership"
-	"strings"
 
 	"github.com/charmbracelet/log"
 )

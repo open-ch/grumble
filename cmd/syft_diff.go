@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/open-ch/grumble/parse"
 	"github.com/open-ch/grumble/syft"
 

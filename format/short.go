@@ -2,6 +2,7 @@ package format
 
 import (
 	"errors"
+
 	"github.com/open-ch/grumble/grype"
 
 	"github.com/charmbracelet/lipgloss"

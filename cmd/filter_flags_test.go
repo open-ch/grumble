@@ -4,8 +4,9 @@ package cmd
 
 import (
 	"errors"
-	"github.com/open-ch/grumble/filters"
 	"testing"
+
+	"github.com/open-ch/grumble/filters"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

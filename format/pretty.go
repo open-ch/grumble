@@ -1,12 +1,14 @@
 package format
 
 import (
+	"errors"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/ownership"
 	"github.com/open-ch/grumble/syft"
-	"strings"
-	"time"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
@@ -29,7 +31,7 @@ func renderPretty[T PrintDocument](document T) (string, error) {
 	case *syft.Document:
 		return renderPrettySyft(castedMatch)
 	}
-	return "", fmt.Errorf("unknown document type")
+	return "", errors.New("unknown document type")
 }
 
 func renderPrettyGrype(document *grype.Document) (string, error) {
@@ -67,35 +69,35 @@ func renderMatchPretty(match *grype.Match) string {
 }
 
 func renderSummary(s *summary) string {
-	counterStyle := styles.constrast.Copy().PaddingLeft(1).PaddingRight(1)
+	counterStyle := styles.constrast.PaddingLeft(1).PaddingRight(1)
 	total := counterStyle.Render(fmt.Sprintf("total: %d", s.total))
 	var critical, high, medium, low, fixed string
 	log.Info("summary", "stats", s)
 	if s.critical > 0 {
-		critical = counterStyle.Copy().Background(colors.critical).
+		critical = counterStyle.Background(colors.critical).
 			Render(fmt.Sprintf("crit: %d", s.critical))
 	}
 	if s.high > 0 {
-		high = counterStyle.Copy().Background(colors.high).
+		high = counterStyle.Background(colors.high).
 			Render(fmt.Sprintf("high: %d", s.high))
 	}
 	if s.medium > 0 {
-		medium = counterStyle.Copy().Background(colors.medium).
+		medium = counterStyle.Background(colors.medium).
 			Render(fmt.Sprintf("med: %d", s.medium))
 	}
 	if s.low > 0 {
-		low = counterStyle.Copy().Background(colors.low).
+		low = counterStyle.Background(colors.low).
 			Render(fmt.Sprintf("low: %d", s.low))
 	}
 	if s.fixed > 0 {
-		fixed = counterStyle.Copy().Background(colors.good).
+		fixed = counterStyle.Background(colors.good).
 			Render(fmt.Sprintf("fixes: %d", s.fixed))
 	}
 
 	w := lipgloss.Width
 	remainingWidth := styles.width - w(styles.logo) - w(total) - w(critical) - w(high) - w(medium) - w(low) - w(fixed)
 	log.Info("Width info", "remaining", remainingWidth, "w high", w(high), "w low", w(low), "logo", w(styles.logo), "total", w(total))
-	flexibleWidth := styles.constrast.Copy().AlignHorizontal(lipgloss.Right).
+	flexibleWidth := styles.constrast.AlignHorizontal(lipgloss.Right).
 		PaddingRight(1).Width(remainingWidth)
 	dbInfo := flexibleWidth.Render(fmt.Sprintf("Grype db: %s", s.dbAge.Format(time.DateOnly)))
 

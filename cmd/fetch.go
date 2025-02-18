@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"os"
+
 	"github.com/open-ch/grumble/download"
 	"github.com/open-ch/grumble/filters"
 	"github.com/open-ch/grumble/format"

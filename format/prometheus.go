@@ -3,9 +3,10 @@ package format
 import (
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/open-ch/grumble/grype"
 	"github.com/open-ch/grumble/ownership"
-	"strings"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/viper"

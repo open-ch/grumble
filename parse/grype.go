@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
 	"github.com/open-ch/grumble/grype"
 )
 
