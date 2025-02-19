@@ -92,17 +92,9 @@ func TestGrypeReport(t *testing.T) {
 	}
 }
 
-func createTmpFolder(t *testing.T) string {
-	t.Helper()
-	testFolderPath, err := os.MkdirTemp("", "GrypeTest")
-	assert.NoError(t, err)
-
-	return testFolderPath
-}
-
 func TestWriteGrypeFile(t *testing.T) {
 	t.Run("TestWriteGrypeFile", func(t *testing.T) {
-		testFolder := createTmpFolder(t)
+		testFolder := t.TempDir()
 		defer os.RemoveAll(testFolder)
 
 		// Read the source file
