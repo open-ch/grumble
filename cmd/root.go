@@ -104,6 +104,7 @@ func initializeConfig(cmd *cobra.Command) error {
 	if err == nil {
 		viper.AddConfigPath(repoRoot)
 		viper.AddConfigPath(path.Join(repoRoot, "cicd"))
+		viper.AddConfigPath(path.Join(repoRoot, "configs"))
 		viper.Set("repositoryPath", repoRoot)
 	} else {
 		log.Warn("Unable to locate repository root (grumble assumes the current working directory is part of a git repository)", "err", err)
