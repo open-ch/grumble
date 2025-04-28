@@ -64,9 +64,10 @@ func (m matchBrowserModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) { //nolint:g
 	}
 
 	var cmd tea.Cmd
-	if m.view == viewList {
+	switch m.view {
+	case viewList:
 		m.list, cmd = m.list.Update(msg)
-	} else if m.view == viewDetails {
+	case viewDetails:
 		m.details, cmd = m.details.Update(msg)
 	}
 	return m, cmd
