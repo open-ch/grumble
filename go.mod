@@ -6,7 +6,7 @@ require (
 	github.com/charmbracelet/bubbles v0.21.0
 	github.com/charmbracelet/bubbletea v1.3.5
 	github.com/charmbracelet/lipgloss v1.1.0
-	github.com/charmbracelet/log v0.4.1
+	github.com/charmbracelet/log v0.4.2
 	github.com/hmarr/codeowners v1.2.1
 	github.com/jarcoal/httpmock v1.4.0
 	github.com/muesli/termenv v0.16.0
