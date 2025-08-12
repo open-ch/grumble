@@ -84,6 +84,7 @@ func GetRootCommand() *cobra.Command {
 	rootCmd.AddCommand(getExploreCommand())
 	rootCmd.AddCommand(getFetchCommand())
 	rootCmd.AddCommand(getParseCommand())
+	rootCmd.AddCommand(getConvertCommand())
 
 	globalFlags := rootCmd.PersistentFlags()
 	globalFlags.String("format", "", "Selects the output format for grumble (*pretty*, json, prometheus, short)")
