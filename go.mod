@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.1-0.20250319133953-166f707985bc
 	github.com/charmbracelet/log v0.4.2
 	github.com/hmarr/codeowners v1.2.1
-	github.com/jarcoal/httpmock v1.4.0
+	github.com/jarcoal/httpmock v1.4.1
 	github.com/muesli/termenv v0.16.0
 	github.com/owenrumney/go-sarif/v2 v2.3.3
 	github.com/spf13/cobra v1.9.1
