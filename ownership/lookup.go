@@ -24,6 +24,7 @@ var lookup *Lookup
 
 // LoadFromCODEOWNERS builds a new ownership Lookup from a codeowners file.
 func LoadFromCODEOWNERS(codeownersPath string) (*Lookup, error) {
+	// nosemgrep: go-use-root-open-osag
 	file, err := os.Open(codeownersPath)
 	if err != nil {
 		return nil, err
