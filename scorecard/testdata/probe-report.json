@@ -1,0 +1,48 @@
+{
+  "date": "2024-01-15",
+  "repo": {
+    "name": "github.com/ossf/scorecard",
+    "commit": "abc123"
+  },
+  "scorecard": {
+    "version": "5.5.0",
+    "commit": "def456"
+  },
+  "findings": [
+    {
+      "probe": "archived",
+      "outcome": "False",
+      "message": "the repo is not archived"
+    },
+    {
+      "probe": "notArchived",
+      "outcome": "True",
+      "message": "the repo is not archived"
+    },
+    {
+      "probe": "hasRecentCommits",
+      "outcome": "True",
+      "message": "found a commit in the last 90 days"
+    },
+    {
+      "probe": "issueActivityByProjectMember",
+      "outcome": "NotApplicable",
+      "message": "no issues found in the last 90 days"
+    },
+    {
+      "probe": "hasLicenseFile",
+      "outcome": "True",
+      "message": "project has a license file"
+    },
+    {
+      "probe": "hasFSFOrOSIApprovedLicense",
+      "outcome": "True",
+      "message": "license is FSF/OSI approved"
+    },
+    {
+      "probe": "hasOSIApprovedLicense",
+      "outcome": "Error",
+      "message": "unable to determine OSI approval"
+    }
+  ]
+}
