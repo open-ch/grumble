@@ -14,7 +14,7 @@ import (
 
 // HTTPTimeoutS holds the timeout to use for fetching
 // grype documents from a remote location.
-const HTTPTimeoutS = 5 * time.Second
+const HTTPTimeoutS = 60 * time.Second
 
 type auth struct {
 	username string
