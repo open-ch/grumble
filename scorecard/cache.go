@@ -27,7 +27,7 @@ type Cache struct {
 
 // LoadCache reads a Cache from path. A missing or corrupt file results in an
 // empty, usable Cache (zero value is valid) and a logged warning rather than
-// an error, so a first run or a transient Artifactory issue never blocks
+// an error, so a first run or a transient Nexus issue never blocks
 // enrichment.
 func LoadCache(path string) *Cache {
 	// nosemgrep: go-use-root-open-osag
